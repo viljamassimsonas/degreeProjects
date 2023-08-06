@@ -1,4 +1,4 @@
-CM1040 - Web Development (HTML, CSS & Python) // SUBMISSION
+CM1040 - Web Development (HTML, CSS & JavaScript) // SUBMISSION
 
 To preview home page, access link below:
 
