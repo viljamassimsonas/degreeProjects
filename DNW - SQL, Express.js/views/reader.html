@@ -1,0 +1,63 @@
+<html>
+   <head>
+      <link rel="stylesheet" href="style.css">
+   </head>
+   <body>
+      <nav>
+         <div id="control">
+            <!-- Inserts hyperlinked to Home "LOGO" image -->
+            <img id="logo" 
+               alt="Logo" src="logo.png" 
+               title="logo" >
+            <!-- start of Nav Bar Links list -->
+            <ul id="rightList">
+               <!-- creates hyperlinked "AUTHOR.HOME" button -->
+               <li class="navButton"><a id="nav1translate" href="/author">AUTHOR.HOME</a></li>
+               <!-- creates hyperlinked "READER.HOME" button -->
+               <li class="currentPage"><a id="nav4translate" href="/reader">READER.HOME</a></li>
+            </ul>
+            <!-- end of Width Control section -->
+         </div>
+      </nav>
+      <div id="target">
+        <!-- Shows blog title, subtitle and author name using EJS -->
+         <h1 style="color: black;">
+            <%= data.author.title %> 
+         </h1>
+         <h2 style="color: black;">
+            <%= data.author.subtitle %> by <%= data.author.name %>
+         </h2>
+         <!-- Shows published articles using EJS -->
+         <h2><u style="text-decoration: underline">PUBLISHED</u></h2>
+         <table>
+            <tr>
+               <th>TITLE</th>
+               <th>DATE</th>
+            </tr>
+            <% for (let i = 0; i < data.articles.length; i++) { %>
+            <% if (data.articles[i].publishedStatus == 1) { %>
+            <tr>
+               <td><%= data.articles[i].title %></td>
+               <td><%= data.articles[i].publishedDate %></td>
+               <td>
+                  <form action="/read" method="GET">
+                     <input name="id" type="hidden" value='<%= data.articles[i].id %>'>
+                     <input type="submit"  value="OPEN LINK" >
+                  </form>
+               </td>
+            </tr>
+            <% } %>    
+            <% } %>
+         </table>
+      </div>
+      <div id="footerTarget">
+         <!-- start of Footer -->
+         <footer>
+            <ul id="contact">
+               <li><b>DNW MIDTERM 2023</b></li>
+            </ul>
+         </footer>
+   </body>
+   </div>
+</html>
+</body>

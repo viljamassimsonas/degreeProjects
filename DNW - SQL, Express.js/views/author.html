@@ -1,0 +1,121 @@
+<html>
+   <head>
+      <link rel="stylesheet" href="style.css">
+   </head>
+   <body>
+      <nav>
+         <div id="control">
+            <!-- Inserts hyperlinked to Home "LOGO" image -->
+            <img id="logo" 
+               alt="Logo" src="logo.png" 
+               title="logo" >
+            <!-- start of Nav Bar Links list -->
+            <ul id="rightList">
+               <!-- creates hyperlinked "AUTHOR.HOME" button -->
+               <li class="currentPage"><a id="nav1translate" href="/author">AUTHOR.HOME</a></li>
+               <!-- creates hyperlinked "AUTHOR.SETTINGS" button -->
+               <li class="navButton"><a id="nav2translate" href="/settings">AUTHOR.SETTINGS</a></li>
+               <!-- creates hyperlinked "CREATE NEW DRAFT" button -->
+               <li class="navButton"><a id="nav3translate" href="/create">CREATE NEW DRAFT</a></li>
+               <!-- creates hyperlinked "READER.HOME" button -->
+               <li class="navButton"><a id="nav4translate" href="/reader">READER.HOME</a></li>
+            </ul>
+         </div>
+      </nav>
+      <div id="target">
+        <!-- Shows blog title, subtitle and author name using EJS -->
+         <h1 style="color: red;">
+            <u style="text-decoration: underline">AUTHOR HOME PAGE</u>
+         </h1>
+         <h1 style="color: black;">
+            <%= data.author.title %> 
+         </h1>
+         <h2 style="color: black;">
+            <%= data.author.subtitle %> by <%= data.author.name %>
+         </h2>
+        <!-- Shows published articles and delete,share buttons using EJS -->
+         <h2><u style="text-decoration: underline">PUBLISHED</u></h2>
+         <table >
+            <tr>
+               <th>ID</th>
+               <th>TITLE</th>
+               <th>CREATED</th>
+               <th>MODIFIED</th>
+               <th>PUBLISHED</th>
+               <th>LIKES</th>
+            </tr>
+            <% for (let i = 0; i < data.articles.length; i++) { %>
+            <% if (data.articles[i].publishedStatus == 1) { %>
+            <tr>
+               <td><%= data.articles[i].id %></td>
+               <td><%= data.articles[i].title %></td>
+               <td><%= data.articles[i].created %></td>
+               <td><%= data.articles[i].modified %></td>
+               <td><%= data.articles[i].publishedDate %></td>
+               <td><%= data.articles[i].likes %></td>
+               <td>
+                  <form action="/read" method="GET">
+                     <input name="id" type="hidden" value='<%= data.articles[i].id %>'>
+                     <input type="submit"  value="OPEN LINK" >
+                  </form>
+               </td>
+               <td>
+                  <form action="/deleteArticleCommand" method="GET">
+                     <input id="search-box" name="ArticleChosen" type="hidden" value='<%= data.articles[i].id %>'>
+                     <input type="submit"  value="DELETE" >
+                  </form>
+               </td>
+            </tr>
+            <% } %>    
+            <% } %>
+         </table>
+         <h2><u style="text-decoration: underline">DRAFTS</u></h2>
+        <!-- Shows draft articles and delete,edit,publish buttons using EJS -->
+         <table>
+            <tr>
+               <th>ID</th>
+               <th>TITLE</th>
+               <th>CREATED</th>
+               <th>MODIFIED</th>
+            </tr>
+            <% for (let i = 0; i < data.articles.length; i++) { %>
+            <% if (data.articles[i].publishedStatus == 0) { %>
+            <tr>
+               <td><%= data.articles[i].id %></td>
+               <td><%= data.articles[i].title %></td>
+               <td><%= data.articles[i].created %></td>
+               <td><%= data.articles[i].modified %></td>
+               <td>
+                  <form action="/publishArticleCommand" method="GET">
+                     <input id="search-box" name="ArticleChosen" type="hidden" value='<%= data.articles[i].id %>'>
+                     <input type="submit"  value="PUBLISH" >
+                  </form>
+               </td>
+               <td>
+                  <form action="/editArticleCommand" method="GET">
+                     <input id="search-box" name="ArticleChosen" type="hidden" value='<%= data.articles[i].id %>'>
+                     <input type="submit"  value="EDIT" >
+                  </form>
+               </td>
+               <td>
+                  <form action="/deleteArticleCommand" method="GET">
+                     <input id="search-box" name="ArticleChosen" type="hidden" value='<%= data.articles[i].id %>'>
+                     <input type="submit"  value="DELETE" >
+                  </form>
+               </td>
+            </tr>
+            <% } %>    
+            <% } %>
+         </table>
+      </div>
+      <div id="footerTarget">
+         <!-- start of Footer -->
+         <footer>
+            <ul id="contact">
+               <li><b>DNW MIDTERM 2023</b></li>
+            </ul>
+         </footer>
+   </body>
+   </div>
+</html>
+</body>

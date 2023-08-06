@@ -1,0 +1,83 @@
+<html>
+   <head>
+      <link rel="stylesheet" href="style.css">
+   </head>
+   <body>
+      <nav>
+         <div id="control">
+            <!-- Inserts hyperlinked to Home "LOGO" image -->
+            <img id="logo" 
+               alt="Logo" src="logo.png" 
+               title="logo" >
+            <!-- start of Nav Bar Links list -->
+            <ul id="rightList">
+               <!-- creates hyperlinked "AUTHOR.HOME" button -->
+               <li class="navButton"><a id="nav1translate" href="/author">AUTHOR.HOME</a></li>
+               <!-- creates hyperlinked "READER.HOME" button -->
+               <li class="navButton"><a id="nav4translate" href="/reader">READER.HOME</a></li>
+            </ul>
+         </div>
+      </nav>
+      <div id="target">
+         <!-- Shows Article title, subtitle and content using EJS -->
+         <div style="max-width: 500px; margin-left: auto; margin-right: auto; text-align: justify;">
+            <h1><%= data.article.title %></h1>
+            <h2><%= data.article.subtitle %></h2>
+            <h3><%= data.article.article %></h3>
+         </div>
+         <br>
+          <!-- Shows published date, like counter and like button using EJS -->
+         <table>
+            <tr>
+               <th>
+                  DATE
+               </th>
+               <td><%= data.article.publishedDate %></td>
+            </tr>
+            <tr>
+               <th>LIKES</th>
+               <td><%= data.article.likes %></td>
+               <td>
+                  <form action="/like" method="get" >
+                     <input type="hidden"  name="id" value='<%= data.article.id %>' required>
+                     <input type="hidden"  name="likes" value='<%= data.article.likes %>' required>
+                     <input type="submit" value="LIKE">
+                  </form>
+               </td>
+            </tr>
+         </table>
+         <br>
+         <h2 style="color: black;"><b>COMMENTS</b></h2>
+        <!-- Shows comments and their dates using EJS -->
+         <table>
+            <tr>
+               <th></th>
+               <th>DATE</th>
+            </tr>
+            <% for (let i = 0; i < data.comments.length; i++) { %>
+            <tr>
+               <td><%= data.comments[i].comment %></td>
+               <td><%= data.comments[i].date %></td>
+            </tr>
+            <% } %>
+         </table>
+         <!-- Creates a comment submit field using EJS -->
+         <form action="/addComment" method="get" >
+            <input type="hidden"  name="id" value='<%= data.article.id %>' required><br>
+            <label >ADD COMMENT</label><br>
+            <textarea  name="comment" rows="6" cols="45" required></textarea><br><br>
+            <input type="submit" value="Submit">
+         </form>
+         <br><br>
+         <button onclick="window.location.href='reader';">GO BACK</button>
+      </div>
+      <div id="footerTarget">
+         <!-- start of Footer -->
+         <footer>
+            <ul id="contact">
+               <li><b>DNW MIDTERM 2023</b></li>
+            </ul>
+         </footer>
+   </body>
+   </div>
+</html>
