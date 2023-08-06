@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+	<!-- start of Header which contains all the non-visible content -->
+	<head>
+		<!-- makes all hyperlinks launch from the parent frame -->
+		<base target="_parent">
+		<!-- sets character set -->
+		<meta charset="UTF-8" />
+		<!-- sets viewporth width as device width -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<!-- blocks bots from indexing in search engines -->
+		<meta name="robots" content="noindex, nofollow" />
+		<!-- adds legacy browser support -->
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<!-- links CSS stylesheet -->
+		<link href="../../stylesheet/style.css" rel="stylesheet" />
+		<!-- loads Handlebars templating engine  -->
+		<script src="../../scripts/functionality/handlebars.js"></script>
+		<!-- loads article metadata -->
+		<script src="../../scripts/dataInput.js"></script>
+		<!-- loads Handlebars compiler -->
+		<script src="../../scripts/functionality/compiler.js"></script>
+	<!-- end of Header -->
+	</head>
+
+	<!-- start of Body element and contains all visible content -->
+	<body>
+	
+
+		<!-- Navigation Bar Target -->
+		<nav id="navBarTarget"></nav>
+
+
+		<!-- navBar iframe data load and transfer into navBar target -->
+		<iframe id="navBarSource" 
+		style="display:none" 
+		src="../templates/navBar.html"
+		onload="document.getElementById('navBarTarget').innerHTML = document.getElementById('navBarSource').contentWindow.document.getElementsByTagName('body')[0].innerHTML;
+				document.getElementsByClassName('navButton')[4].classList.add('currentPage')"
+		></iframe>
+
+
+		<!-- Ticket Widget (Not my code, only implemented) -->
+		<div id="ticker">
+			<div class="tradingview-widget-container">
+				<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-tickers.js" async>
+					{"symbols":[{"proName":"FOREXCOM:SPXUSD","title":"S&P 500"},{"proName":"FOREXCOM:NSXUSD","title":"US 100"},{"proName":"FX_IDC:EURUSD","title":"EUR\/USD"},{"proName":"BITSTAMP:BTCUSD","title":"Bitcoin"},{"proName":"BITSTAMP:ETHUSD","title":"Ethereum"}],"colorTheme":"light","isTransparent":false,"showSymbolLogo":true,"locale":"en"}
+					</script>
+			</div>
+		</div>
+
+
+		<!-- LOGO Image and description about the page -->
+		<div style="margin-top: 184px">
+			<div id="newsArea">
+				<div>								
+					<img src="../../media/logo.png" 
+						 alt="logo"
+						 id="aboutLogo">
+				</div>
+				<div id="newsAreaArticle">
+					<b>ENGLISH</b>
+					</br></br>
+					CRYPTO NEWS offers original coverage of the global blockchain and cryptocurrency news, provides opinions, reviews, guides, introduces to Crypto people with an aim to help the general public understand and successfully use these technologies now and in the future.
+					</br></br>
+					We believe that the most important thing in the Blockchain revolution is the ability of people to understand and embrace the change. Our journalism standards - impartiality, truthfulness, transparency, and accuracy - will help you navigate this extremely dynamic world.
+					</br></br>
+					Join us in this journey, as there are millions of things to learn and understand. The change happens by bringing all the voices together.
+					</br></br>
+					All credits to all available market news for the public. This page is only for educational purposes.
+					</br></br></br></br>
+					<b>ESPAÑOL</b>
+					</br></br>
+					CRYPTO NEWS ofrece una cobertura original de las noticias globales de blockchain y criptomonedas, brinda opiniones, reseñas, guías y presenta a las personas de Crypto con el objetivo de ayudar al público en general a comprender y utilizar con éxito estas tecnologías ahora y en el futuro.
+					</br></br>
+					Creemos que lo más importante en la revolución Blockchain es la capacidad de las personas para comprender y aceptar el cambio. Nuestros estándares periodísticos (imparcialidad, veracidad, transparencia y precisión) lo ayudarán a navegar en este mundo extremadamente dinámico.
+					</br></br>
+					Únase a nosotros en este viaje, ya que hay millones de cosas para aprender y comprender. El cambio ocurre al juntar todas las voces.
+					</br></br>
+					Todos los créditos a todas las noticias de mercado disponibles para el público. Esta página es solo para fines educativos.
+				</div>
+			</div>
+		</div>
+
+
+		<!-- Footer and Subscribe section target -->
+		<div id="footerTarget"></div>
+
+
+		<!-- Footer and Subscribe section iframe data load and -->
+		<!-- transfer into Footer and Subscribe section target -->
+		<iframe id="footerSource" 
+				style="display:none" 
+				src="../templates/footer.html"
+				onload="document.getElementById('footerTarget').innerHTML = document.getElementById('footerSource').contentWindow.document.getElementsByTagName('body')[0].innerHTML;"
+		></iframe>
+
+
+		<!-- runs Subscription animation once Confirm button pressed -->
+		<script id="subscribed"> const subscribed = () => { document.getElementById("subscribe").innerHTML = "SUBSCRIBED"; }
+		</script>
+
+
+		<!-- makes dropdown menu functional with JS using targets from events -->
+		<script src="../../scripts/functionality/dropdownMenu.js"></script>
+
+	
+		<!-- runs script that changes language of all contents after selection -->
+		<script src="../../scripts/functionality/changeLanguage.js"></script>
+
+		
+	<!-- end of Home Body element and all the visible content -->
+	</body>
+</html>

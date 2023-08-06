@@ -1,0 +1,41 @@
+<!-- article Template -->
+<div id="newsArea">
+	<!-- TITLE -->
+	<div id="newsAreaTitle">
+		{{title}}
+	</div>
+	<!-- HEADING -->
+	<div id="newsAreaHeading">
+		{{heading}}
+	</div>
+	<div id="newsAreaMetadata">
+		<!-- IMAGE -->
+		<div id="leftImage">
+			<img alt="{{alt}}" id="newsAreaImage" class="fading" src="../../media/articles/{{image}}">
+		</div>
+		<div id="rightText">
+			<ul id="rightTextTable">
+				<!-- TIME -->
+				<li id="newsAreaTime">
+					{{time}}
+				</li>
+				<!-- AUTHOR -->
+				<li>
+					{{author}}
+				</li>
+			</ul>
+		</div>
+	</div>
+	<!-- ARTICLE SECTION TARGET -->
+	<div id="newsAreaArticle">
+	</div>
+</div>
+
+<!-- ENGLISH ARTICLE IFRAME DATA LOAD -->
+<iframe id="ENGLISH" style="display:none" src="../../articles/{{folder}}/EN.html"></iframe>
+
+<!-- SPANISH ARTICLE IFRAME DATA LOAD -->
+<iframe id="SPANISH" style="display:none" src="../../articles/{{folder}}/ES.html"></iframe>
+
+<!-- CATEGORY INDEX FOR REFERENCE ON ACTIVE CATEGORY ON NAV BAR -->
+<div style="display:none" id="catIndex">{{category}}</div>

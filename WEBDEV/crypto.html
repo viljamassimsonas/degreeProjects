@@ -1,0 +1,16 @@
+<head><link rel="icon" href="media/logo.png" /></head>
+
+<!-- loads Category base iframe, transfers index refernce    -->
+<!-- into iframe and on load runs Category template compiler -->
+<!-- and sets Category title in the window bar -->
+<body style="margin:0">
+    <iframe width="100%" 
+            height="100%" 
+            id="categoryBase" 
+            src="iframes/bases/categoryBase.html"
+            frameborder="0"
+            onload="{document.getElementById('categoryBase').contentWindow.document.getElementById('bridge').innerHTML = 0
+                     document.getElementById('categoryBase').contentWindow.buildCategory()
+                     document.title += 'Crypto News - CRYPTO'}">
+    </iframe>
+</body>

@@ -1,0 +1,31 @@
+<head>
+
+    <!-- loads icon shown on tab -->
+    <link rel="icon" href="../../media/logo.png" />
+    
+    
+    <!-- loads article metadata -->
+    <script src="../../scripts/dataInput.js"></script>
+    
+    
+    <!-- assigns folder pathname -->
+    <script>var folder = window.location.pathname</script>
+    
+    
+    <!-- extracts current folder from path and finds index reference in Article metadata -->
+    <script src="../../scripts/functionality/setFolder.js"></script>
+</head>
+
+<body style="margin: 0px">
+
+    <!-- loads Article base iframe, transfers index refernce    -->
+    <!-- into iframe and on load runs Article template compiler -->
+    <iframe width="100%" 
+            height="100%" 
+            id="articleBase" 
+            src="../../iframes/bases/articleBase.html"
+            frameborder="0"
+            onload="{document.getElementById('articleBase').contentWindow.document.getElementById('bridge').innerHTML = indexSelected
+                     document.getElementById('articleBase').contentWindow.buildArticle(dataInput)}">
+    </iframe>
+</body>

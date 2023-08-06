@@ -1,0 +1,25 @@
+<!-- Category Template -->
+{{#each news}}
+<div onclick=" window.parent.location.href='../../articles/{{folder}}/index.html';" class="catGrid">
+    <!-- IMAGE -->
+    <div id="catImage">
+        <img alt="{{alt}}" class="latestImage fading" src="../../media/articles/{{image}}">
+    </div>
+    <div id="catMeta">
+        <ul>
+            <!-- TITLE -->
+            <li>
+                <h1 id="catTitle">{{title}}</h1>
+            </li>
+            <!-- HEADING -->
+            <li>
+                <div id="catHeading">{{heading}}</div>
+            </li>
+            <!-- TIME -->
+            <li>
+                <h2 id="catTime">{{time}}</h2>
+            </li>
+        </ul>
+    </div>
+</div>
+{{/each}}

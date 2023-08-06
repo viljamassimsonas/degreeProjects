@@ -1,0 +1,703 @@
+/* ------------------ START of Global Rules Section CSS ------------------ */
+html {
+  height: 100%;
+  /* sets html height as device's screen's height */
+  box-sizing: border-box;
+  /* sets max size of html equal to the size set */
+  min-width: 700px;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+  /* sets max size of the rest of the elements equal to the parent box boundaries */
+}
+li {
+  list-style-type: none;
+  /* removes all lists' default styling */
+}
+a {
+  text-decoration: none;
+  /* removes all hyperlinks' default underline */
+  color: black;
+  /* sets default hyperlink color */
+}
+body {
+  /* changes  Body styling */
+  background-color: rgb(245, 245, 245);
+  /* sets background color */
+  position: relative;
+  margin: 0;
+  padding-bottom: 160px;
+  min-height: 100%;
+  text-align: center;
+  font-family: "Trebuchet MS", Tahoma, sans-serif;
+  /* sets main font and fallback ones */
+}
+/* implemets ticker widget */
+#ticker {
+  position: absolute;
+  top: -116px;
+  left: 0px;
+  right: 0px;
+  background-color: white;
+}
+/* styles ticker widget */
+.tradingview-widget-container {
+  padding-left: 12px;
+  max-width: 1040px;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* styles compiled Article and Category templates */
+#target {
+  position: relative;
+  margin-top: 186px;
+  padding-left: 12px;
+}
+/* ------------------ END of Global Rules Section CSS ------------------ */
+
+/* ------------------ START of Navigation Bar Section CSS ------------------ */
+nav {
+  /* controls Nav Bar Section styling */
+  user-select: none;
+  position: fixed;
+  /* forces Nav Bar to stay at the same position in the page at all times */
+  top: 0px;
+  /* sets top edge of Nav Bar at topmost coordinate of the page */
+  left: 0px;
+  /* sets left edge of Nav Bar at the leftmost coordinate of the page */
+  right: 0px;
+  /* sets right edge of Nav Bar at the rightmost coordinate of the page */
+  background-color: rgb(69, 69, 96);
+  /* sets Nav Bar background color */
+  z-index: 1;
+  /* positions Nav Bar above other items */
+}
+#control {
+  /* controls Nav Bar contents styling */
+  min-width: 818px;
+  /* sets Nav Bar contents minimum width */
+  max-width: 1100px;
+  /* sets Nav Bar contents maximum width */
+  margin-left: auto;
+  /* centers all the grid with its contents */
+  margin-right: auto;
+  /* centers all the grid with its contents */
+}
+#logo {
+  /* controls Logo Image styling */
+  float: left;
+  /* moves Logo to the left */
+  margin: 5px 0px 5px 10px;
+  /* creates space above Logo */
+  height: 62px;
+  /* sets Logo width */
+  transform: translateX(-100px);
+  /* sets how Long animation takes to complete */
+  animation: logo 8s ease forwards;
+  /* sets Logo animation, uses @keyframes logo parameters */
+}
+@keyframes logo {
+  10% {
+      transform: translateX(-100px);
+  }
+  /* Logo's animation vector from right to left */
+  25% {
+      transform: translateX(0px);
+      /* sets final Logo position after animation*/
+  }
+  100% {
+      transform: translateX(0px);
+      /* sets final Logo position after animation*/
+  }
+}
+nav ul {
+  float: left;
+  /* moves nav bar to the right */
+  margin: 25px 0px 0px 0px;
+  /* adds spacing to the nav from the page edege */
+  transition: 1s;
+  /* time it takes for nav bar animation to complete*/
+}
+/* pushes to the right ABOUT and Language select buttons */
+#rightList {
+  float: right;
+}
+nav li {
+  display: inline;
+  /* makes list to be shown as a row instead of column */
+  border: 0px;
+  /* sets each nav button border thickness */
+  font-size: 20px;
+  /* sets nav bar font size */
+  margin-right: 20px;
+  padding: 10px 0px 19.5px 0px;
+  transition: 0.2s;
+}
+nav li a {
+  color: white;
+  padding: 10px 10px 32px 10px;
+  /* sets Nav Bar Links padding */
+}
+/* ABOUT button specific dimension */
+#nav5 {
+  padding-bottom: 19.4px;
+}
+nav li:hover {
+  border-bottom: 4px solid aqua;
+  /* spawns a marker line at the bottom of the Nav Bar Link hovered over */
+}
+.currentPage {
+  border-bottom: 4px solid aqua;
+  /* sets line marker current page respective Nav Bar Link to ease orientation */
+}
+#lang {
+  margin-right: 0px;
+  /* removes margin on the right of Change Language select button */
+}
+#lang:hover {
+  border-bottom: 0px;
+  /* disables Change Language select button line marker when mouse hovered over it */
+}
+#lang select {
+  /* change language button styling */
+  appearance: none;
+  /* Removes default select arrow */
+  outline: none;
+  /* removes default outline border after using the select button */
+  border: 0px;
+  /*removes default button border */
+  padding: 0px 5px 0px 5px;
+  /* increases button size sideways */
+  font-size: 20px;
+  /* sets select font size */
+  color: aqua;
+  /* sets select font color */
+  background-color: rgb(69, 69, 96);
+  /* makes select background transparent */
+}
+/* mobile navigation bar styling */
+/* hides whole mobile nav bar on default */
+#mobileNav {
+  display: none;
+  grid-template-columns: auto auto;
+  max-width: 1045px;
+  min-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* image padding mobile nav bar */
+#mobileNav img {
+  padding: 10px;
+}
+/* dropdown menu including expand icon styling */
+#expand {
+  position: relative;
+  max-width: 200px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 40px;
+}
+/* specific dropdown menu container styling */
+#dropdown {
+  display: none;
+  position: absolute;
+  transform: translate(-92px, 0px);
+  background-color: transparent;
+  border-top: 0px;
+}
+/* invidual styling of each dropdown option */
+.dropdownEach {
+  padding: 10px;
+  background-color: rgb(69, 69, 96);
+  color: white;
+  border: 3px solid black;
+  margin-top: 0.01px;
+  border-radius: 4%;
+}
+/* violet highlight on hovered link button from dropdown menu */
+.dropdownEach:hover {
+  border-color: #ff00ef;
+  cursor: pointer;
+}
+/* ------------------ END of Navigation Bar Section CSS ------------------ */
+
+/* ------------------ START of HOME Section CSS ------------------ */
+
+
+/* styles Image Carousel */
+#latestGrid {
+  margin: 185px 0px 10px 0px;
+  display: grid;
+  grid-template-columns: auto auto;
+  /* sets how many rows and their size */
+  margin-left: auto;
+  /* centers all the grid with its contents */
+  margin-right: auto;
+  /* centers all the grid with its contents */
+  user-select: none;
+  min-width: 825px;
+  max-height: 580px;
+}
+#latestGrid li {
+  padding: 10px
+}
+/* Article metadata styling in Image Carousel */
+.latestSection {
+  background-color: white;
+  font-size: 40px;
+  float: right;
+  max-width: 250px;
+  padding: 0px;
+  margin: 0px;
+  margin-left: 15px;
+  min-height: 100%;
+  font-weight: bold;
+  border-top: 0px;
+}
+.latestSection li {
+  text-align: center;
+  padding: 30px;
+  cursor: pointer;
+}
+#latestTitle {
+  border-top: 1px solid black;
+}
+/* image styling in Image Carousel */
+#latestImageSection {
+  position: relative;
+  max-width: 776px;
+}
+.latestImage {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+/* fading animation used across all Article Images */
+.fading {
+  animation-name: fading;
+  animation-duration: 3s;
+}
+@keyframes fading {
+  from {
+      opacity: .2
+  }
+  to {
+      opacity: 1
+  }
+}
+/* move to right slide button styling */
+#moveRight {
+  font-size: 40px;
+  cursor: pointer;
+  color: white;
+  margin: 0px;
+  position: absolute;
+  top: 45%;
+  right: 2%;
+  background-color: rgba(128, 128, 128, 0.33);
+  border-radius: 10%;
+  padding: 0px 9px 4px 10px;
+  transition: 1s;
+}
+#moveRight:hover {
+  background-color: rgba(128, 128, 128, 0.75);
+}
+/* ball indicator section styling */
+#indicatorSection {
+  position: absolute;
+  bottom: 2%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.indicator {
+  display: inline;
+  cursor: pointer;
+  background-color: rgba(128, 128, 128, 0.75);
+  padding: 0px 9px 0px 9px;
+  border-radius: 100%;
+  margin: 15px;
+  transition: 0.5s;
+}
+/* turns indicator white when active or hovered */
+.indicator:hover, .active {
+  background-color: white;
+}
+/* start of Home Subsection */
+#subSection {
+  margin-top: 45px;
+  display: grid;
+  grid-template-columns: 400px auto auto auto;
+  grid-template-areas: "twitter latest latest latest";
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1045px;
+  margin-bottom: 30px;
+}
+/* twitter widget styling */
+#twitter {
+  grid-area: twitter;
+  height: 400px;
+  overflow: scroll;
+  min-height: 99.75%;
+  margin-left: 15px;
+}
+/* Latest News section containing each Article Invidual Metadata */
+#subLatestNews {
+  grid-area: latest;
+  transform: translateY(-8px);
+}
+/* Latest News Title */
+
+#subsectionTitle {
+  color: #ff00ef;
+  font-size: 40px;
+  font-weight: bold;
+}
+/* invidual Article metadata section */
+.subsectionNews {
+  background-color: white;
+  text-align: left;
+  margin-top: 20px;
+  margin-left: 20px;
+  transition: 1s;
+  display: grid;
+  grid-template-columns: 40% 60%;
+  
+}
+/* highlights invidual Article hovered */
+.subsectionNews:hover {
+  background-color: rgba(209, 209, 255, 0.25);
+  cursor: pointer;
+}
+/* Latest News Subsection Image Section */
+#latestNewsImageSection {
+  width: 100%;
+}
+/* Latest News Subsection Image */
+.latestNewsImage{
+  width: 100%;
+  height: 100%;
+}
+
+/* each Article metadata grid */
+#metadata {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-areas: "cat date";
+}
+/* category position metadata */
+#category {
+  margin: 0px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin: 0px;
+  grid-area: cat;
+}
+/* time position at metadata */
+#time {
+  text-align: right;
+  margin: 0px;
+  grid-area: date;
+  padding-right: 10px;
+}
+/* title styling of each invidual Article metadata */
+#title {
+  border-top: 1px solid black;
+  padding: 10px;
+  margin: 0px;
+}
+
+/* ------------------ END of HOME Section CSS ------------------ */
+
+
+/* ------------------ START of CATEGORY page Section CSS ------------------ */
+
+/* Category grid styling */
+.catGrid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 40% 60%;
+  grid-template-areas: "catImage catMeta";
+  background-color: white;
+  margin-right: 20px;
+  text-align: left;
+  margin-top: 45px;
+  margin-left: 20px;
+  margin-bottom: 30px;
+  transition: 1s;
+  max-width: 1027px;
+  margin-left: auto;
+  margin-right: auto;
+  cursor: pointer;
+}
+.catGrid:hover {
+  background-color: rgba(209, 209, 255, 0.25);
+  cursor: pointer;
+}
+/* article image */
+#catImage {
+  grid-area: catImage;
+  max-width: 100%;
+}
+/* area containing meta info on right side of image*/
+#catMeta {
+  grid-area: catMeta;
+}
+/* meta table styling */
+#catMeta ul {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+/* heading position */
+#catHeading {
+  padding: 20px;
+  font-size: 25px;
+}
+/* adds square bullet point left of category heading */
+#catHeading::before {
+  content: "■";
+  position: absolute;
+  transform: translate(-22.5px, -5px);
+}
+/* time position */
+#catTime {
+  text-align: right;
+  margin: 0px;
+  padding-right: 10px;
+  font-size: 20px;
+  position: absolute;
+  bottom: 1%;
+  right: 1%;
+}
+
+/* ------------------ END of CATEGORY page Section CSS ------------------ */
+
+
+
+/* ------------------ START of ARTICLE page Section CSS ------------------ */
+
+/* Article Page CSS styling */
+#newsArea {
+  max-width: 1027px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 30px;
+  background-color: white;
+}
+/* Article Title styling */
+#newsAreaTitle {
+  padding-top: 20px;
+  font-size: 50px;
+  font-weight: bold;
+  text-align: justify;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+/* Article Heading styling */
+#newsAreaHeading {
+  padding-top: 20px;
+  text-align: justify;
+  font-size: 30px;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+/* adds square before start of Heading */
+#newsAreaHeading::before {
+  content: "■";
+  position: absolute;
+  transform: translate(-30px, -5px);
+}
+/* Article section styling */
+#newsAreaMetadata {
+  display: grid;
+  grid-template-rows: auto auto;
+  grid-template-areas: "left right";
+  background-color: white;
+  margin-right: 20px;
+  text-align: left;
+  margin-top: 30px;
+  margin-left: 20px;
+  margin-bottom: 0px;
+  transition: 1s;
+  max-width: 1027px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 30px;
+}
+/* Article Image position */
+#leftImage {
+  grid-area: left;
+}
+/* Article Title styling */
+#newsAreaImage {
+  width: 100%;
+}
+/* Article metadata styling */
+#rightText {
+  grid-area: right;
+  max-height: 500px;
+  width: 200px;
+  position: relative;
+}
+/* Article Author and Date bottom border */
+#rightText li {
+  border-bottom: 1px solid black;
+}
+/* Article Author and Date bottom position */
+#rightTextTable {
+  margin: 0;
+  position: absolute;
+  top: 70%;
+  transform: translateY(-70%);
+  width: 200px;
+}
+#newsAreaTime {
+  margin-bottom: 150px;
+}
+/* Article content styling */
+#newsAreaArticle {
+  text-align: justify;
+  padding: 30px;
+  font-size: 20px;
+}
+
+/* ------------------ END of ARTICLE page Section CSS ------------------ */
+
+
+/* ------------------ START of SUBSCRIBE Section CSS ------------------ */
+
+/* Subscribe Section CSS styling */
+#subscribe {
+  position: absolute;
+  right: 0;
+  bottom: 71px;
+  left: 0;
+  background-color: rgb(69, 69, 96);
+  padding: 19px;
+  color: #fff;
+  font-size: 30px;
+  border-bottom: 3px solid aqua;
+}
+input {
+  height: 30px;
+  padding-top: 10px;
+}
+#emailInput {
+  font-size: 20px;
+  padding: 10px;
+  position: relative;
+  bottom: 3px;
+}
+/* Confirm button styling */
+#subButton {
+  margin-left: 5px;
+  padding: 0px 5px 0px 5px;
+  border: 2px solid aqua;
+  font-size: 25px;
+  background-color: rgb(69, 69, 96);
+  color: #fff;
+  cursor: pointer;
+  transform: translate(0, -1.5px);
+  border-bottom: 2px solid #ff00ef;
+  border-left: 2px solid #ff00ef;
+}
+
+/* ------------------ END of SUBSCRIBE Section CSS ------------------ */
+
+
+/* ------------------ START of FOOTER Section CSS ------------------ */
+
+footer {
+  /* changes Footer element styling */
+  position: absolute;
+  right: 0;
+  bottom: 0px;
+  left: 0;
+  padding: 1.5px 0px 1.5px 0px;
+  /* sets margin spacing over and under footer area */
+  background-color: rgb(69, 69, 96);
+  display: grid;
+  /* sets footer element as subgrid of map grid */
+  grid-template-columns: auto auto;
+  /* sets how many rows and their size */
+  margin-left: auto;
+  /* centers all the grid with its contents */
+  margin-right: auto;
+  /* centers all the grid with its contents */
+  z-index: 1;
+  color: white;
+}
+footer a {
+  /* changes Footers hyperlinked elements' text color */
+  color: aqua;
+}
+#contact {
+  /* changes "CONTACT US" styling */
+  margin-left: auto;
+  margin-right: 100px;
+}
+#info {
+  /* changes "OTHER INFO" styling */
+  margin-right: auto;
+  margin-left: 100px;
+  transform: translate(-40px, 10px);
+}
+
+/* ------------------ END of FOOTER Section CSS ------------------ */
+
+
+
+/* ------------------ START of MISC  CSS ------------------ */
+
+
+/* styling alteration for smaller screens */
+@media screen and (max-width: 800px) {
+  #mobileNav {
+      display: grid;
+  }
+  #ticker {
+      display: none;
+  }
+  #target {
+      margin-top: 125px;
+  }
+  #control {
+      display: none;
+  }
+  #latestGrid {
+      display: none;
+  }
+  #subSection {
+      margin-top: 125px;
+  }
+  #latestNewsImageSection{
+      display: none;
+  }
+  .subsectionNews{
+      display: block;
+  }
+}
+
+
+
+/* scrollbar, track and handle styling */
+::-webkit-scrollbar {
+  width: 2.75px;
+  height: 0px;
+}
+::-webkit-scrollbar-track {
+  background: rgb(69, 69, 96);
+}
+::-webkit-scrollbar-thumb {
+  background: #ff00ef;
+}
+
+
+
+/* ABOUT Page logo styling */
+#aboutLogo {
+  background-color: rgb(69, 69, 96); 
+  border-radius: 10%; 
+  margin-top: 30px;
+  max-width: 300px;
+}

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+	<!-- start of Header which contains all the non-visible content -->
+	<head>
+		<!-- makes all hyperlinks launch from the parent frame -->
+		<base target="_parent">
+		<!-- sets character set -->
+		<meta charset="UTF-8" />
+		<!-- sets viewporth width as device width -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<!-- blocks bots from indexing in search engines -->
+		<meta name="robots" content="noindex, nofollow" />
+		<!-- adds legacy browser support -->
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<!-- links CSS stylesheet -->
+		<link href="../../stylesheet/style.css" rel="stylesheet" />
+		<!-- loads Handlebars templating engine  -->
+		<script src="../../scripts/functionality/handlebars.js"></script>
+		<!-- loads article metadata -->
+		<script src="../../scripts/dataInput.js"></script>
+		<!-- loads Handlebars compiler -->
+		<script src="../../scripts/functionality/compiler.js"></script>
+	<!-- end of Header -->
+	</head>
+
+	<!-- start of Body element and contains all visible content -->
+	<body>
+	
+
+		<!-- Navigation Bar Target -->
+		<nav id="navBarTarget"></nav>
+
+
+		<!-- navBar iframe data load and transfer into navBar target -->
+		<iframe id="navBarSource" 
+		style="display:none" 
+		src="../templates/navBar.html"
+		onload="document.getElementById('navBarTarget').innerHTML = document.getElementById('navBarSource').contentWindow.document.getElementsByTagName('body')[0].innerHTML;"
+		></iframe>
+
+
+		<!-- Ticket Widget (Not my code, only implemented) -->
+		<div id="ticker">
+			<div class="tradingview-widget-container">
+				<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-tickers.js" async>
+					{"symbols":[{"proName":"FOREXCOM:SPXUSD","title":"S&P 500"},{"proName":"FOREXCOM:NSXUSD","title":"US 100"},{"proName":"FX_IDC:EURUSD","title":"EUR\/USD"},{"proName":"BITSTAMP:BTCUSD","title":"Bitcoin"},{"proName":"BITSTAMP:ETHUSD","title":"Ethereum"}],"colorTheme":"light","isTransparent":false,"showSymbolLogo":true,"locale":"en"}
+					</script>
+			</div>
+		</div>
+
+		<!-- TEMPLATE COMPILER TARGET  -->
+		<div id="target"></div>
+
+		<!-- ARTICLE SELECTED INPUT  -->
+		<div id="bridge" style="display:none"></div>
+
+		<!-- SCRIPT LOCATION INIT FOR DATA TRANSFER -->
+		<script id="newsSection" type="template/handlebars">
+			</script>
+
+
+		<!-- ARTICLE TEMPLATE IFRAME DATA LOAD -->	
+		<iframe id="newsSectionSource" 
+				style="display:none" 
+				src="../templates/articleTemplate.html"
+		></iframe>
+
+
+		<!-- compile Article template -->
+		<script src="../../scripts/builders/buildArticle.js"></script>
+
+		
+		<!-- Footer and Subscribe section target -->
+		<div id="footerTarget"></div>
+
+
+		<!-- Footer and Subscribe section iframe data load and -->
+		<!-- transfer into Footer and Subscribe section target -->
+		<iframe id="footerSource" 
+				style="display:none" 
+				src="../templates/footer.html"
+				onload="document.getElementById('footerTarget').innerHTML = document.getElementById('footerSource').contentWindow.document.getElementsByTagName('body')[0].innerHTML;"
+		></iframe>
+
+
+		<!-- runs Subscription animation once Confirm button pressed -->
+		<script id="subscribed"> const subscribed = () => { document.getElementById("subscribe").innerHTML = "SUBSCRIBED"; }
+		</script>
+
+
+		<!-- makes dropdown menu functional with JS using targets from events -->
+		<script src="../../scripts/functionality/dropdownMenu.js"></script>
+
+	
+		<!-- runs script that changes language of all contents after selection -->
+		<script src="../../scripts/functionality/changeLanguage.js"></script>
+
+		
+	<!-- end of Home Body element and all the visible content -->
+	</body>
+</html>

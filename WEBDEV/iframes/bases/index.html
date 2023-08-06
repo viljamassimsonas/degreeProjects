@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+	<!-- start of Header which contains all the non-visible content -->
+	<head>
+		<!-- makes all hyperlinks launch from the parent frame -->
+		<base target="_parent">
+		<!-- sets character set -->
+		<meta charset="UTF-8" />
+		<!-- sets viewporth width as device width -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<!-- blocks bots from indexing in search engines -->
+		<meta name="robots" content="noindex, nofollow" />
+		<!-- adds legacy browser support -->
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<!-- links CSS stylesheet -->
+		<link href="../../stylesheet/style.css" rel="stylesheet" />
+		<!-- loads Handlebars templating engine  -->
+		<script src="../../scripts/functionality/handlebars.js"></script>
+		<!-- loads article metadata -->
+		<script src="../../scripts/dataInput.js"></script>
+		<!-- loads Handlebars compiler -->
+		<script src="../../scripts/functionality/compiler.js"></script>
+	<!-- end of Header -->
+	</head>
+
+	<!-- start of Body element and contains all visible content -->
+	<body>
+	
+
+		<!-- Navigation Bar Target -->
+		<nav id="navBarTarget"></nav>
+
+
+		<!-- navBar iframe data load and transfer into navBar target -->
+		<iframe id="navBarSource" 
+		style="display:none" 
+		src="../templates/navBar.html"
+		onload="document.getElementById('navBarTarget').innerHTML = document.getElementById('navBarSource').contentWindow.document.getElementsByTagName('body')[0].innerHTML;
+				document.getElementsByClassName('navButton')[0].classList.add('currentPage')"
+		></iframe>
+
+
+		<!-- Ticket Widget (Not my code, only implemented) -->
+		<div id="ticker">
+			<div class="tradingview-widget-container">
+				<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-tickers.js" async>
+					{"symbols":[{"proName":"FOREXCOM:SPXUSD","title":"S&P 500"},{"proName":"FOREXCOM:NSXUSD","title":"US 100"},{"proName":"FX_IDC:EURUSD","title":"EUR\/USD"},{"proName":"BITSTAMP:BTCUSD","title":"Bitcoin"},{"proName":"BITSTAMP:ETHUSD","title":"Ethereum"}],"colorTheme":"light","isTransparent":false,"showSymbolLogo":true,"locale":"en"}
+					</script>
+			</div>
+		</div>
+
+
+		<!-- Image Carousel Template -->
+		<script id="imageCarousel" type="template/handlebars">
+		  <div id="latestGrid">
+			  <!-- contains Category and Title sections -->
+			  <div>
+				  {{#each latestNews}}
+				  	  <!-- HTML event loads article pressed -->
+					  <ul onclick="window.parent.location.href='../../articles/{{folder}}/index.html';" class="latestSection fading">
+						<!-- Title and Heading shown in Image Carousel -->  
+						<li>{{category}}</li>
+						  <li id="latestTitle">{{title}}</li>
+					  </ul>
+				  {{/each}}
+			  </div>
+			  <!-- contains Image and Button Control sections -->
+			  <div id="latestImageSection">
+				  {{#each latestNews}}
+				  	  <!-- Image shown in Image Carousel -->  
+				      <!-- HTML event loads article pressed -->
+					  <img alt="{{alt}}" onclick="window.parent.location.href='../../articles/{{folder}}/index.html';" 
+						   class="latestImage fading" 
+						   src="../../media/articles/{{image}}">
+				  {{/each}}
+				  <!-- Move to Right Slide button -->  
+				  <p id="moveRight">&#10095;</p>
+				  <div id="indicatorSection">
+					  {{#each latestNews}}
+						  <!-- active slide indicators -->
+						  <div class="indicator"></div>
+					  {{/each}}
+				  </div>
+			  </div>	
+		  </div>
+		</script>
+
+
+		<!-- Latest News Template -->
+		<script id="latestNews" type="template/handlebars">				
+			{{#each news}}
+				<!-- HTML event loads article pressed -->
+				<div onclick="window.parent.location.href='../../articles/{{folder}}/index.html';" class="subsectionNews">
+					<div id="latestNewsImageSection">
+						<img alt="{{alt}}" class="latestNewsImage fading" src="../../media/articles/{{image}}">
+					</div>
+					<div>
+						<div id="metadata">
+							<div>
+								<!-- CATEGORY -->
+								<h3 id="category">{{category}}</h3>
+							</div>
+							<div>
+								<!-- TIME -->
+								<h3 id="time">{{time}}</h3>
+							</div>
+						</div>
+						<!-- TITLE -->
+						<h2 id="title">{{title}}</h2>
+					</div>
+				</div>
+			{{/each}}
+		</script>
+
+
+		<!-- Image Carousel target -->
+		<div  id="target1"></div>
+
+
+		<!-- section under Image Carousel -->
+		<div id="subSection">
+			<!-- Twitter Widget (Not my code, only implemented) -->
+			<div id="twitter">
+				<div>
+					<a class="twitter-timeline" 
+						href="https://twitter.com/business?ref_src=twsrc%5Etfw">
+						Tweets by business</a> 
+					<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+				</div>
+			</div>
+			<!-- Latest News Section -->
+			<div id="subLatestNews">
+				<div  id="subsectionTitle">
+					LATEST NEWS
+				</div>
+				<span id="target2"></span>
+			</div>
+		</div>
+
+
+		<!-- compile Home templates -->
+		<script src="../../scripts/builders/buildHome.js"></script>
+
+		
+		<!-- Footer and Subscribe section target -->
+		<div id="footerTarget"></div>
+
+
+		<!-- Footer and Subscribe section iframe data load and -->
+		<!-- transfer into Footer and Subscribe section target -->
+		<iframe id="footerSource" 
+				style="display:none" 
+				src="../templates/footer.html"
+				onload="document.getElementById('footerTarget').innerHTML = document.getElementById('footerSource').contentWindow.document.getElementsByTagName('body')[0].innerHTML;"
+		></iframe>
+
+
+		<!-- runs Subscription animation once Confirm button pressed -->
+		<script id="subscribed"> const subscribed = () => { document.getElementById("subscribe").innerHTML = "SUBSCRIBED"; }
+		</script>
+
+
+		<!-- makes dropdown menu functional with JS using targets from events -->
+		<script src="../../scripts/functionality/dropdownMenu.js"></script>
+
+	
+		<!-- runs script that changes language of all contents after selection -->
+		<script src="../../scripts/functionality/changeLanguage.js"></script>
+
+
+	<!-- end of Home Body element and all the visible content -->
+	</body>
+</html>

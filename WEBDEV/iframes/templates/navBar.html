@@ -1,0 +1,68 @@
+<!-- start of Navigation Bar section -->
+<div id="control">
+    <!-- Inserts hyperlinked to Home "LOGO" image -->
+    <img id="logo" 
+         onclick="window.parent.location.href='../../index.html'" 
+         alt="Logo" src="../../media/logo.png" 
+         title="ACROPOLIS Hours" 
+         style="cursor:pointer"/>
+    <!-- start of Nav Bar Links list -->
+    <ul id="leftList">
+        <!-- creates hyperlinked "HOME" button -->
+        <li class="navButton"><a id="nav1translate" href="../../index.html">HOME</a></li>
+        <!-- creates hyperlinked "CRYPTO" button -->
+        <li class="navButton"><a id="nav2translate" href="../../crypto.html">CRYPTO</a></li>
+        <!-- creates hyperlinked "MARKETS" button -->
+        <li class="navButton"><a id="nav3translate" href="../../markets.html">MARKETS</a></li>
+        <!-- creates hyperlinked "TECHNOLOGY" button -->
+        <li class="navButton"><a id="nav4translate" href="../../tech.html">TECHNOLOGY</a></li>
+    </ul>
+    <ul id="rightList">
+        <!-- creates hyperlinked "ABOUT" button -->
+        <li class="navButton"><a id="nav5translate" href="../../about.html">ABOUT</a></li>
+        <!-- start of Change Language select element section -->
+        <li id="lang">
+            <!-- start of Change Language select element -->
+            <select onchange="updateLanguage()" id="langSelect" title="Change Language" name="languages">
+                <!-- creates English language select option -->
+                <option value="EN">EN</option>
+                <!-- creates Spanish language select option -->
+                <option value="ES">ES</option>
+                <!-- end of select element -->
+            </select>
+            <!-- end of select element section -->
+        </li>
+        <!-- end of Nav Bar Links list -->
+    </ul>
+    <!-- end of Width Control section -->
+</div>
+<!-- end of Navigation Bar section -->
+
+
+<!-- start of Mobile Navigation Bar section -->
+<div id="mobileNav">
+    <!-- Inserts hyperlinked to Home "LOGO" image -->
+    <div>
+        <img style="cursor:pointer" 
+             onclick="window.parent.location.href='../../index.html'" 
+             width="86px" id="mLogo" alt="Logo"
+             src="../../media/logo.png" 
+             title="ACROPOLIS Hours" />
+    </div>
+    <div id="expand">
+        <img alt="logo" width="86px" id="expandImage" alt="Logo" src="../../media/dropdown.png" />
+        <div id="dropdown">
+            <!-- creates hyperlinked "HOME" button -->
+            <div id="home1" class="dropdownEach" onclick="window.parent.location.href='../../index.html'">HOME</a></div>
+            <!-- creates hyperlinked "CRYPTO" button -->
+            <div class="dropdownEach" onclick="window.parent.location.href='../../crypto.html'">CRYPTO</a></div>
+            <!-- creates hyperlinked "MARKETS" button -->
+            <div class="dropdownEach" onclick="window.parent.location.href='../../markets.html'">MARKETS</a></div>
+            <!-- creates hyperlinked "TECHNOLOGY" button -->
+            <div class="dropdownEach" onclick="window.parent.location.href='../../tech.html'">TECHNOLOGY</a></div>
+            <!-- creates hyperlinked "ABOUT" button -->
+            <div class="dropdownEach" onclick="window.parent.location.href='../../about.html'">ABOUT</a></div>
+        </div>
+    </div>
+</div>
+<!-- end of Mobile Navigation Bar section -->
