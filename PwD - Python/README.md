@@ -1,3 +1,7 @@
 CM2015 - Programming with Data (Python) // SUBMISSION
 
-Run report.ipynb
+To preview notebook press link below:
+
+https://github.com/viljamassimsonas/degreeProjects/blob/main/PwD%20-%20Python/report.ipynb
+
+To test totally notebook, download project.zip and run report.ipynb locally.
