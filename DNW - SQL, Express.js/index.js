@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 3015;
+const port = 3000;
 const sqlite3 = require('sqlite3').verbose();
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
