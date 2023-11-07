@@ -6,4 +6,4 @@ https://htmlpreview.github.io/?https://github.com/viljamassimsonas/degreeProject
 
 To experience the whole site, download webdev.zip and run it with a local Python server.
 
-Twitter Gadget is not operative anymore.
+The Twitter widget has been decommissioned.
