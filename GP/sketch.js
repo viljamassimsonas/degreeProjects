@@ -31,15 +31,15 @@ function setup() {
 
   // Create red threshold slider
   redThresholdSlider = createSlider(0, 255, redThreshold);
-  redThresholdSlider.position(10, height - 30);
+  redThresholdSlider.position(10, 600);
   redThresholdSlider.input(updateRedThreshold);
 
   greenThresholdSlider = createSlider(0, 255, greenThreshold);
-  greenThresholdSlider.position(10, height - 30);
+  greenThresholdSlider.position(400, 600);
   greenThresholdSlider.input(updateGreenThreshold);
 
   blueThresholdSlider = createSlider(0, 255, blueThreshold);
-  blueThresholdSlider.position(10, height - 30);
+  blueThresholdSlider.position(800, 600);
   blueThresholdSlider.input(updateBlueThreshold);
 
 
@@ -186,22 +186,20 @@ image(video, 800, 300, gridWidth, gridHeight);
 
 
 
+
+
+
+redChannel = [];
+
 for (let i = 0; i < restore.length; i++) {
 
   video.pixels[i] = restore[i];
   
+  redChannel.push(i)
 }
 
 
-
-  // Capture webcam source
-  //video.loadPixels();
-  
-  // Create separate image objects for each channel
-  
-
-
-  redChannel = restore
+ 
   
   // Iterate through webcam pixels
   for (let i = 0; i < video.pixels.length; i += 4) {
@@ -221,7 +219,7 @@ for (let i = 0; i < restore.length; i++) {
 
   for (let i = 0; i < redChannel.length; i++) {
 
-    video.pixels[i] = restore[i];
+    video.pixels[i] = redChannel[i];
     
   }
 
@@ -232,22 +230,30 @@ for (let i = 0; i < restore.length; i++) {
   image(video, 10, 600, gridWidth, gridHeight);
   
 
-  for (let i = 0; i < restore.length; i++) {
 
-    video.pixels[i] = restore[i];
-    
-  }
+greenChannel = [];
+
+for (let i = 0; i < restore.length; i++) {
+
+  video.pixels[i] = restore[i];
+  
+  greenChannel.push(i)
+}
+
 
 
 /////////////////////////////////////////
 
 
 
-greenChannel = restore
-  
-// Iterate through webcam pixels
+
+ 
+
+
 for (let i = 0; i < video.pixels.length; i += 4) {
   // Extract red value from webcam source
+  
+
   let r = video.pixels[i];
   
   // Apply red threshold  
@@ -257,10 +263,18 @@ for (let i = 0; i < video.pixels.length; i += 4) {
   if (r > greenThreshold) {
     greenChannel[i+1] = r; // Bright red
   } else {
-    greenChannel[i+1] = greenChannel; // Dark red
+    greenChannel[i+1] = greenThreshold; // Dark red
   }
 
   greenChannel[i + 2] = 0; // Zero out B channel
+}
+
+
+
+for (let i = 0; i < greenChannel.length; i++) {
+
+  video.pixels[i] = greenChannel[i];
+  
 }
 
 
@@ -268,7 +282,7 @@ for (let i = 0; i < video.pixels.length; i += 4) {
 video.updatePixels();
 
 // Display red channel
-image(video, 10, 600, gridWidth, gridHeight);
+image(video, 400, 600, gridWidth, gridHeight);
 
 
 for (let i = 0; i < restore.length; i++) {
@@ -277,7 +291,75 @@ for (let i = 0; i < restore.length; i++) {
   
 }
 
+///////////////////////////////////////////////////
+
+
+
+
+blueChannel = [];
+
+for (let i = 0; i < restore.length; i++) {
+
+  video.pixels[i] = restore[i];
   
+  blueChannel.push(i)
+}
+
+
+
+
+for (let i = 0; i < video.pixels.length; i += 4) {
+  // Extract red value from webcam source
+  
+
+  let r = video.pixels[i];
+  
+  // Apply red threshold  
+  
+  blueChannel[i] = 0; // Zero out G channel
+ 
+  blueChannel[i + 1] = 0; // Zero out B channel
+  
+
+ if (r > blueThreshold) {
+    blueChannel[i+2] = r; // Bright red
+  } else {
+    blueChannel[i+2] = blueThreshold; // Dark red
+  }
+
+ 
+}
+
+
+
+for (let i = 0; i < blueChannel.length; i++) {
+
+  video.pixels[i] = blueChannel[i];
+  
+}
+
+
+// Update pixels for red channel
+video.updatePixels();
+
+// Display red channel
+image(video, 800, 600, gridWidth, gridHeight);
+
+
+for (let i = 0; i < restore.length; i++) {
+
+  video.pixels[i] = restore[i];
+  
+}
+
+
+///////////////////////////////////////////////////////////////
+
+
+
+
+
+
   
 }
 
