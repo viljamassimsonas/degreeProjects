@@ -15,6 +15,7 @@ function setup() {
   test1 = true;
 
   test2 = true;
+
 }
 
 
@@ -149,8 +150,40 @@ for (let i = 0; i < restore.length; i++) {
 
 
 
-
-
-
-
+  // Capture webcam source
+  video.loadPixels();
+  
+  // Create separate image objects for each channel
+  let redChannel = createImage(gridWidth, gridHeight);
+  
+  // Load pixels for red channel
+  redChannel.loadPixels();
+  
+  // Iterate through webcam pixels
+  for (let i = 0; i < video.pixels.length; i += 4) {
+    // Extract red value from webcam source
+    let r = video.pixels[i];
+    
+    // Apply red threshold
+    if (r > redThreshold) {
+      redChannel.pixels[i] = r; // Bright red
+    } else {
+      redChannel.pixels[i] = redThreshold; // Dark red
+    }
+    redChannel.pixels[i + 1] = 0; // Zero out G channel
+    redChannel.pixels[i + 2] = 0; // Zero out B channel
+  }
+  
+  // Update pixels for red channel
+  redChannel.updatePixels();
+  
+  // Display red channel
+  image(redChannel, 10, 500, gridWidth, gridHeight);
+  
+  // Rest of your code...
 }
+
+
+
+
+
