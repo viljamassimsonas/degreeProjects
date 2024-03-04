@@ -1,7 +1,7 @@
 let video;
 let snapshot;
-let gridWidth = 160*2;
-let gridHeight = 120*2;
+let gridWidth = 170*2;
+let gridHeight = 100*2;
 
 
 let redThresholdSlider;
@@ -15,7 +15,7 @@ let blueThreshold = 127;
 
 
 function setup() {
-  createCanvas(1100, 1000);
+  createCanvas(1100, 1500);
   
   // Initialize webcam
   video = createCapture(VIDEO);
@@ -112,7 +112,7 @@ function draw() {
   // Update webcam pixels
   video.updatePixels();
 
-  image(video, 400, 10, gridWidth, gridHeight);
+  image(video, 360, 10, gridWidth, gridHeight);
 
 
   for (let i = 0; i < restore.length; i++) {
@@ -159,7 +159,7 @@ for (let i = 0; i < video.pixels.length; i += 4) {
 
 video.updatePixels();
 
-image(video, 400, 300, gridWidth, gridHeight);
+image(video, 360, 300, gridWidth, gridHeight);
 
 
 
@@ -182,7 +182,7 @@ for (let i = 0; i < video.pixels.length; i += 4) {
 // Update pixels for each channel
 video.updatePixels();
 
-image(video, 800, 300, gridWidth, gridHeight);
+image(video, 710, 300, gridWidth, gridHeight);
 
 
 
@@ -195,7 +195,7 @@ for (let i = 0; i < restore.length; i++) {
 
   video.pixels[i] = restore[i];
   
-  redChannel.push(i)
+  redChannel.push(255)
 }
 
 
@@ -208,7 +208,7 @@ video.updatePixels();
     let r = video.pixels[i];
     
     // Apply red threshold
-    if (r > redThreshold) {
+    if (r >= redThreshold) {
       redChannel[i] = r; // Bright red
     } else {
       //redChannel[i] = redThreshold; // Dark red
@@ -261,7 +261,7 @@ for (let i = 0; i < video.pixels.length; i += 4) {
   
   greenChannel[i] = 0; // Zero out G channel
 
-  if (r > greenThreshold) {
+  if (r >= greenThreshold) {
     greenChannel[i+1] = r; // Bright red
   } else {
     //greenChannel[i+1] = greenThreshold; // Dark red
@@ -299,7 +299,7 @@ for (let i = 0; i < restore.length; i++) {
 
   video.pixels[i] = restore[i];
   
-  blueChannel.push(i)
+  blueChannel.push(255)
 }
 
 video.updatePixels();
@@ -319,7 +319,7 @@ for (let i = 0; i < video.pixels.length; i += 4) {
   blueChannel[i + 1] = 0; // Zero out B channel
   
 
- if (r > blueThreshold) {
+ if (r >= blueThreshold) {
     blueChannel[i+2] = r; // Bright red
   } else {
     //blueChannel[i+2] = blueThreshold; // Dark red
