@@ -238,7 +238,7 @@ for (let i = 0; i < restore.length; i++) {
 
   video.pixels[i] = restore[i];
   
-  greenChannel.push(i)
+  greenChannel.push(255)
 }
 
 
@@ -255,9 +255,8 @@ video.updatePixels();
 for (let i = 0; i < video.pixels.length; i += 4) {
   // Extract red value from webcam source
   
-
   let r = video.pixels[i+1];
-  
+
   // Apply red threshold  
   
   greenChannel[i] = 0; // Zero out G channel
