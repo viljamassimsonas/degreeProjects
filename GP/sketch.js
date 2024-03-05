@@ -461,6 +461,8 @@ for (let i = 0; i < restore.length; i++) {
 video.updatePixels();
 
 
+invert = []
+
 for (let i = 0; i < video.pixels.length; i += 4) {
   // Extract RGB color channels
 
@@ -482,13 +484,13 @@ for (let i = 0; i < video.pixels.length; i += 4) {
 
   } else if (cond.value() == 1) {
 
-   video.pixels[i]     = 255 * (1-c)
+   video.pixels[i]      = 255 * (1-c)
     video.pixels[i + 1] = 255 * (1-m)
     video.pixels[i + 2] = 255 * (1-y)
 
   } else if (cond.value() == 2){
 
- video.pixels[i]     = video.pixels[i] * 0.8
+ video.pixels[i]      = video.pixels[i]     * 0.8
   video.pixels[i + 1] = video.pixels[i + 1] * 0.6
   video.pixels[i + 2] = video.pixels[i + 2] * 0.4
 
@@ -530,6 +532,12 @@ for (let i = 0; i < video.pixels.length; i += 4) {
   }
 
   else if (cond.value() == 5) {}
+
+
+  invert.push(video.pixels[i])
+  invert.push(video.pixels[i+1])
+  invert.push(video.pixels[i+2])
+  invert.push(video.pixels[i+3])
 
 }
 
@@ -708,6 +716,7 @@ video.updatePixels();
 
 image(video, 710, 640, gridWidth, gridHeight);
 
+
 if (detections.length > 0) {
    points = detections[0].landmarks.positions; // <------------------ !!! MUST MAKE GLOBAL, LET ENCAPSULATES WITHIN THE 
   for (let i = 0; i < points.length; i++) {   // BLYATLOAD OF POINTS 
@@ -788,48 +797,53 @@ if (detections.length > 0) {
   console.log("+ X --->", maxX); // Output: Max X: 15
   console.log("+ Y --->", maxY); // Output: Max Y: 30
 
+  if (detections.length > 0) {
 
+    noFill();
+    strokeWeight(1);
+    stroke("red");
+    rect(minX+710, minY+640, maxX-minX, maxY-minY);
+  
+    }
   }
 
 
-
-if(detections.length > 0) {
-
-  for (let i = 0; i < restore.length; i++) {
+ for (let i = 0; i < restore.length; i++) {
 
     video.pixels[i] = restore[i];
 
   }
+
+
+if(detections.length > 0) {
+
 
    for (let x = 0; x < gridWidth; x++) {
 
       for (let y = 0; y < gridHeight; y++) {
 
-        console.log(x," ",y,"\n")
+        //console.log(x," ",y,"\n")
 
         if ((x >= minX & x <=maxX) && (y >= minY & y <=maxY)) {
 
-          video.pixels[i]   = grayscale[(y*gridWidth+x)*4]
+          //console.log("LOADED")
+
+          video.pixels[((y*gridWidth+x)*4)]   = grayscale[((y*gridWidth+x)*4)] 
+          video.pixels[((y*gridWidth+x)*4)+1] = grayscale[((y*gridWidth+x)*4)+1] 
+          video.pixels[((y*gridWidth+x)*4)+2] = grayscale[((y*gridWidth+x)*4)+2] 
+          video.pixels[((y*gridWidth+x)*4)+3] = grayscale[((y*gridWidth+x)*4)+3] 
 
         }
       }
   } 
   
-} } 
-
+} 
   
   video.updatePixels();
 
   image(video, 10, 850, gridWidth, gridHeight);
   
-  if (detections.length > 0) {
 
-  noFill();
-  strokeWeight(1);
-  stroke("red");
-  rect(minX+10, minY+850, maxX-minX, maxY-minY);
-
-  }
 
 
     
@@ -839,6 +853,32 @@ if(detections.length > 0) {
     
   }
   
+  if(detections.length > 0) {
+
+
+    for (let x = 0; x < gridWidth; x++) {
+ 
+       for (let y = 0; y < gridHeight; y++) {
+ 
+         //console.log(x," ",y,"\n")
+ 
+         if ((x >= minX & x <=maxX) && (y >= minY & y <=maxY)) {
+ 
+           //console.log("LOADED")
+ 
+           video.pixels[((y*gridWidth+x)*4)]   = invert[((y*gridWidth+x)*4)] 
+           video.pixels[((y*gridWidth+x)*4)+1] = invert[((y*gridWidth+x)*4)+1] 
+           video.pixels[((y*gridWidth+x)*4)+2] = invert[((y*gridWidth+x)*4)+2] 
+           video.pixels[((y*gridWidth+x)*4)+3] = invert[((y*gridWidth+x)*4)+3] 
+ 
+         }
+       }
+   } 
+   
+ } 
+
+
+
   video.updatePixels();
   
   
@@ -857,6 +897,49 @@ if(detections.length > 0) {
   
   video.updatePixels();
   
+
+
+  
+
+
+
+  if(detections.length > 0) {
+
+
+    for (let x = 0; x < gridWidth; x++) {
+ 
+       for (let y = 0; y < gridHeight; y++) {
+ 
+         //console.log(x," ",y,"\n")
+ 
+         if ((x >= minX & x <=maxX) && (y >= minY & y <=maxY)) {
+ 
+          let sum = [0, 0, 0];
+          for (let dx = -3; dx <= 3; dx++) {    // <----- KERNEL CHANGE 3x3 = -1 & -1
+            for (let dy = -3; dy <= 3; dy++) {  // <----- KERNEL CHANGE 5x5 = -2 & -2
+              
+              let index = 4 * ((y + dy) * gridWidth + (x + dx));
+    
+              for (let i = 0; i < 3; i++) {
+                sum[i] += video.pixels[index + i];
+              }
+            }
+          }
+          let pixelIndex = 4 * (y * video.width + x);
+          for (let i = 0; i < 3; i++) {
+            video.pixels[pixelIndex + i] = sum[i] / (3*3*3*2); // <--- CORRECT THE FORMULA
+          }
+        }
+ 
+         }
+       }
+   } 
+
+
+
+    video.updatePixels();
+
+
   
   image(video, 710, 850, gridWidth, gridHeight);
 
