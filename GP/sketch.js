@@ -944,6 +944,115 @@ if(detections.length > 0) {
   image(video, 710, 850, gridWidth, gridHeight);
 
 
+  for (let i = 0; i < restore.length; i++) {
+
+    video.pixels[i] = restore[i];
+
+
+
+  }
+  
+
+
+
+
+
+  sum = 0
+
+  count = 0
+
+
+
+  if(detections.length > 0) {
+
+
+  
+
+
+    for (let x = 0; x < gridWidth; x++) {
+ 
+       for (let y = 0; y < gridHeight; y++) {
+  
+         if ((x >= minX & x <=maxX) && (y >= minY & y <=maxY)) {
+ 
+           //console.log("LOADED")
+ 
+           video.pixels[((y*gridWidth+x)*4)]   = grayscale[((y*gridWidth+x)*4)] 
+           video.pixels[((y*gridWidth+x)*4)+1] = grayscale[((y*gridWidth+x)*4)+1] 
+           video.pixels[((y*gridWidth+x)*4)+2] = grayscale[((y*gridWidth+x)*4)+2] 
+           video.pixels[((y*gridWidth+x)*4)+3] = grayscale[((y*gridWidth+x)*4)+3] 
+ 
+         }
+       }
+   } 
+   
+ } 
+   
+
+
+
+
+
+ if(detections.length > 0) {
+
+
+  blockSizeH = (gridHeight/5)/5
+
+  blockSizeW = (gridWidth/5)/2
+
+
+
+
+  for  (offsetY = 0; offsetY < 5; offsetY++){
+    for(offsetX = 0; offsetX < 5; offsetX++){
+
+      console.log("offsetX --->",offsetX)
+      console.log("offsetY --->",offsetY)
+
+
+            // Paint each block with the average pixel intensity
+            for   (let y = 0 + blockSizeH * offsetY; y < blockSizeH * (offsetY + 1); y++) {
+              for (let x = 0 + blockSizeW * offsetX; x < blockSizeW * (offsetX + 1); x++) {
+
+                let pixelIndex = ((y*gridWidth+x)*4)
+
+                sum += video.pixels[pixelIndex];
+                count++;
+
+              }}
+
+        
+                let average = sum / count;
+
+                console.log(average);
+
+                      
+
+                        // Paint each block with the average pixel intensity
+                  for   (let y = 0 + blockSizeH * offsetY; y < blockSizeH * (offsetY+1); y++) {
+                    for (let x = 0 + blockSizeW * offsetX; x < blockSizeW * (offsetX+1); x++) {
+
+                  let pixelIndex = ((y*gridWidth+x)*4)
+
+
+                  video.pixels[pixelIndex]     =  (255/5)*(offsetX+1);
+                  video.pixels[pixelIndex + 1] =  (255/5)*(offsetY+1);
+                  video.pixels[pixelIndex + 2] =  0;
+                
+                }}
+
+              }}
+          
+  console.log("\n\n\n END \n\n\n")
+
+  video.updatePixels();
+
+  image(video, 10, 1060, gridWidth, gridHeight);
+
+
+
+  }
+
 
 }
 
