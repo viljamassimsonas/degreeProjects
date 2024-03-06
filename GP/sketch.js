@@ -926,8 +926,8 @@ if(detections.length > 0) {
          if ((x >= minX & x <=maxX) && (y >= minY & y <=maxY)) {
  
           let sum = [0, 0, 0];
-          for (let dx = -3; dx <= 3; dx++) {    // <----- KERNEL CHANGE 3x3 = -1 & -1
-            for (let dy = -3; dy <= 3; dy++) {  // <----- KERNEL CHANGE 5x5 = -2 & -2
+          for (let dx = -4; dx <= 4; dx++) {    // <----- KERNEL CHANGE 3x3 = -1 & -1
+            for (let dy = -4; dy <= 4; dy++) {  // <----- KERNEL CHANGE 5x5 = -2 & -2
               
               let index = 4 * ((y + dy) * gridWidth + (x + dx));
     
@@ -938,7 +938,7 @@ if(detections.length > 0) {
           }
           let pixelIndex = 4 * (y * video.width + x);
           for (let i = 0; i < 3; i++) {
-            video.pixels[pixelIndex + i] = sum[i] / (3*3*3*2); // <--- CORRECT THE FORMULA
+            video.pixels[pixelIndex + i] = sum[i] / (3*3*3*3); // <--- CORRECT THE FORMULA
           }
         }
  
