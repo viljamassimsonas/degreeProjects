@@ -839,10 +839,24 @@ if(detections.length > 0) {
 
           //console.log("LOADED")
 
-          video.pixels[((y*gridWidth+x)*4)]   = grayscale[((y*gridWidth+x)*4)] 
-          video.pixels[((y*gridWidth+x)*4)+1] = grayscale[((y*gridWidth+x)*4)+1] 
-          video.pixels[((y*gridWidth+x)*4)+2] = grayscale[((y*gridWidth+x)*4)+2] 
-          video.pixels[((y*gridWidth+x)*4)+3] = grayscale[((y*gridWidth+x)*4)+3] 
+          let i = ((y*gridWidth+x)*4)
+          let r = video.pixels[i];
+          let g = video.pixels[i + 1];
+          let b = video.pixels[i + 2];
+          let brightness = (r + g + b) / 3;
+          brightness += 51; // Increase brightness by 20%
+          brightness = constrain(brightness, 0, 255); // Ensure brightness stays within 0-255 range
+          
+          if (brightness >= 128) {
+          
+          video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = brightness;
+            
+          } else {
+
+            video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 0
+
+          }
+       
 
         }
       }
@@ -974,7 +988,7 @@ if(detections.length > 0) {
   count = 0
 
 
-
+/*
   if(detections.length > 0) {
 
 
@@ -988,11 +1002,18 @@ if(detections.length > 0) {
          if ((x >= minX & x <=maxX) && (y >= minY & y <=maxY)) {
  
            //console.log("LOADED")
- 
-           video.pixels[((y*gridWidth+x)*4)]   = grayscale[((y*gridWidth+x)*4)] 
-           video.pixels[((y*gridWidth+x)*4)+1] = grayscale[((y*gridWidth+x)*4)+1] 
-           video.pixels[((y*gridWidth+x)*4)+2] = grayscale[((y*gridWidth+x)*4)+2] 
-           video.pixels[((y*gridWidth+x)*4)+3] = grayscale[((y*gridWidth+x)*4)+3] 
+
+           let i = ((y*gridWidth+x)*4)
+           let r = video.pixels[i];
+           let g = video.pixels[i + 1];
+           let b = video.pixels[i + 2];
+           let brightness = (r + g + b) / 3;
+           //brightness += 51; // Increase brightness by 20%
+           brightness = constrain(brightness, 0, 255); // Ensure brightness stays within 0-255 range
+           video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = brightness;
+       
+       
+       
  
          }
        }
@@ -1000,7 +1021,7 @@ if(detections.length > 0) {
    
  } 
    
-
+*/
 
  video.updatePixels();
 
@@ -1226,17 +1247,147 @@ count = 0
 
 
 
+
+
+
+
+
+
   console.log("\n\n\n END \n\n\n")
 
-  //video.updatePixels();
+
+
+  for (let i = 0; i < restore.length; i++) {
+
+    video.pixels[i] = restore[i];
+
+  }
+
+
+
+  video.updatePixels();
 
 
 
 
-  
+          for (let i = 0; i < gridWidth * gridHeight * 4; i += 4) {
+            // Get RGB values of the current pixel
+            let r = video.pixels[i];
+            let g = video.pixels[i + 1];
+            let b = video.pixels[i + 2];
+
+            // Convert RGB to HSV
+            let hsv = rgbToHsv(r, g, b);;
+
+            // Update pixel values
+            video.pixels[i]     = hsv[0];
+            video.pixels[i + 1] = hsv[1];
+            video.pixels[i + 2] = hsv[2];
+          }
+
+
+    // Update pixels on canvas
+    video.updatePixels();
+
+
+    image(video, 360, 1060, gridWidth, gridHeight);
+
+
 
 
 }
+
+// Helper function to convert RGB to HSV
+function rgbToHsv(r, g, b) {
+
+  
+   
+
+          let max = Math.max(r, g, b), min = Math.min(r, g, b);
+
+
+          S = (max - min) / max;
+
+          V = max;
+        
+          //////////////////////////////////////////////////////
+          
+          R = ((max-r)/(max-min));
+
+          G = ((max-g)/(max-min));
+
+          B = ((max-b)/(max-min));
+
+          //////////////////////////////////////////////////////////
+          
+          if                    (S == 0) H = 0
+
+          else if  (r == max & g == min) H = 5 + B
+
+          else if  (r == max & g != min) H = 1 - G
+
+          else if  (g == max & b == min) H = R + 1
+
+          else if  (g == max & b != min) H = 3 - B
+
+          else if            (r == max ) H = 3 - B
+
+          else if  (r == max & g == min) H = 3 + G
+
+          else                           H = 5 - R
+
+          ////////////////////////////////////////////////////////////
+
+          hex = H / 60
+
+          /////////////////////////////////////////////////////////////
+
+          primary = floor(hex)
+
+          ///////////////////////////////////////////////////////////
+
+          secondary = hex - primary
+
+          ///////////////////////////////////////////////////////////
+
+          a = (1 - S) * V
+
+          b = (1 - (S * secondary)) * V
+
+          c = (1 - (S * (1 - secondary))) * V
+
+          ////////////////////////////////////////////////////////////
+
+          console.log("RETURN AREA")
+
+          if (primary == 0) return [V, c, a]
+
+          if (primary == 1) return [b, V, a]
+
+          if (primary == 2) return [a, V, c]
+
+          if (primary == 3) return [a, b, V]
+
+          if (primary == 4) return [c, a, V]
+
+          if (primary == 5) return [V, a, b]
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
