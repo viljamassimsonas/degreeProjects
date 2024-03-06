@@ -1269,21 +1269,78 @@ count = 0
 
 
 
+ 
 
-          for (let i = 0; i < gridWidth * gridHeight * 4; i += 4) {
-            // Get RGB values of the current pixel
+  for (let i = 0; i <video.pixels.length; i += 4) {     //< 1 ; i += 4) {
+           
+
             let r = video.pixels[i];
             let g = video.pixels[i + 1];
             let b = video.pixels[i + 2];
 
             // Convert RGB to HSV
-            let hsv = rgbToHsv(r, g, b);;
+
+            max = Math.max(r, g, b)
+          
+
+            min = Math.min(r, g, b)
+  
+            ////////////////////////////////////////////
+  
+  
+            S = (max - min) / max;
+            
+            if (!S) S = 0
+  
+            V = max;
+          
+            //////////////////////////////////////////////////////
+            
+            R = ((max-r)/(max-min));
+  
+            if (!R) R = 0
+  
+            G = ((max-g)/(max-min));
+  
+            if (!G) G = 0
+  
+            B = ((max-b)/(max-min));
+  
+            if (!B) B = 0
+  
+  
+            //////////////////////////////////////////////////////////
+            
+            if                    (S == 0) H = 0
+  
+            else if  (r == max & g == min) H = 5 + B
+  
+            else if  (r == max & g != min) H = 1 - G
+  
+            else if  (g == max & b == min) H = R + 1
+  
+            else if  (g == max & b != min) H = 3 - B
+  
+            else if            (r == max ) H = 3 - B
+  
+            else if  (r == max & g == min) H = 3 + G
+  
+            else                           H = 5 - R
+  
+  
+            
+            //return [H*60, S*100, V]
+  
+            //let hsv = rgbToHsv(r, g, b);;
+
+            console.log(S*360)
 
             // Update pixel values
-            video.pixels[i]     = hsv[0];
-            video.pixels[i + 1] = hsv[1];
-            video.pixels[i + 2] = hsv[2];
+            video.pixels[i]     = H*60;
+            video.pixels[i + 1] = S*360;
+            video.pixels[i + 2] = V;
           }
+        
 
 
     // Update pixels on canvas
@@ -1300,13 +1357,19 @@ count = 0
 // Helper function to convert RGB to HSV
 function rgbToHsv(r, g, b) {
 
-  
-   
 
-          let max = Math.max(r, g, b), min = Math.min(r, g, b);
+
+          max = Math.max(r, g, b)
+          
+
+          min = Math.min(r, g, b)
+
+          ////////////////////////////////////////////
 
 
           S = (max - min) / max;
+          
+          if (!S) S = 0
 
           V = max;
         
@@ -1314,9 +1377,38 @@ function rgbToHsv(r, g, b) {
           
           R = ((max-r)/(max-min));
 
+          if (!R) R = 0
+
           G = ((max-g)/(max-min));
 
+          if (!G) G = 0
+
           B = ((max-b)/(max-min));
+
+          if (!B) B = 0
+
+
+          console.log("r ---->",r)
+
+          console.log("g ---->",g)
+
+          console.log("b ---->",b)
+
+          console.log("\n")
+
+          console.log("max ---->",max)
+
+          console.log("min ---->",min)
+
+          console.log("\n")
+
+          console.log("R ---->",R)
+
+          console.log("G ---->",G)
+
+          console.log("B ---->",B)
+
+          console.log("\n")
 
           //////////////////////////////////////////////////////////
           
@@ -1336,29 +1428,50 @@ function rgbToHsv(r, g, b) {
 
           else                           H = 5 - R
 
+          //H = H * 60
+
+          console.log("HUE ---->",H)
+
+          return [H*60, S*100, V]
+
           ////////////////////////////////////////////////////////////
 
-          hex = H / 60
+          //hex = H / 60
+
+          if (!hex) hex = 0
 
           /////////////////////////////////////////////////////////////
 
+          console.log("HEX ---->",hex)
+
           primary = floor(hex)
+
+          if (!primary) primary = 0
 
           ///////////////////////////////////////////////////////////
 
           secondary = hex - primary
 
+          if (!secondary) secondary = 0
+
           ///////////////////////////////////////////////////////////
 
           a = (1 - S) * V
 
+          if (!a) a = 0
+
           b = (1 - (S * secondary)) * V
+
+          if (!b) b = 0
 
           c = (1 - (S * (1 - secondary))) * V
 
+          if (!c) c = 0
           ////////////////////////////////////////////////////////////
 
           console.log("RETURN AREA")
+
+          console.log(primary)
 
           if (primary == 0) return [V, c, a]
 
@@ -1372,7 +1485,7 @@ function rgbToHsv(r, g, b) {
 
           if (primary == 5) return [V, a, b]
 
-
+          console.log("NO RETURN")
 }
 
 
