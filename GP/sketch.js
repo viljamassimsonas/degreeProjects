@@ -145,6 +145,8 @@ function updatecrThreshold() {
 function draw() {
 
 
+
+
 updateyThreshold() 
   
 updatecbThreshold()
@@ -757,8 +759,8 @@ if (detections.length > 0) {
 
         console.log("\n\n\n")
 
-  console.log("- X --->", minX); // Output: Max X: 15
-  console.log("- Y --->", minY); // Output: Max Y: 30
+ //console.log("- X --->", minX); // Output: Max X: 15
+ // console.log("- Y --->", minY); // Output: Max Y: 30
 
 
 
@@ -794,8 +796,8 @@ if (detections.length > 0) {
 
         console.log("\n\n\n")
 
-  console.log("+ X --->", maxX); // Output: Max X: 15
-  console.log("+ Y --->", maxY); // Output: Max Y: 30
+  //console.log("+ X --->", maxX); // Output: Max X: 15
+  //console.log("+ Y --->", maxY); // Output: Max Y: 30
 
   if (detections.length > 0) {
 
@@ -953,6 +955,7 @@ if(detections.length > 0) {
   }
   
 
+  video.updatePixels();
 
 
 
@@ -990,15 +993,28 @@ if(detections.length > 0) {
    
 
 
+ video.updatePixels();
+
+ image(video, 10, 1060, gridWidth, gridHeight);
 
 
+
+/*
 
  if(detections.length > 0) {
 
 
-  blockSizeH = (gridHeight/5)/5
 
-  blockSizeW = (gridWidth/5)/2
+
+  console.log(maxX-minX)
+
+  console.log(Math.floor((gridWidth/5)/8))
+
+
+
+  blockSizeH = (maxY-minY)/5
+
+  blockSizeW = (maxX-minX)/5
 
 
 
@@ -1006,52 +1022,202 @@ if(detections.length > 0) {
   for  (offsetY = 0; offsetY < 5; offsetY++){
     for(offsetX = 0; offsetX < 5; offsetX++){
 
-      console.log("offsetX --->",offsetX)
-      console.log("offsetY --->",offsetY)
+      //console.log("offsetX --->",offsetX)
+      //console.log("offsetY --->",offsetY)
 
 
             // Paint each block with the average pixel intensity
-            for   (let y = 0 + blockSizeH * offsetY; y < blockSizeH * (offsetY + 1); y++) {
-              for (let x = 0 + blockSizeW * offsetX; x < blockSizeW * (offsetX + 1); x++) {
+            for   (let y = Math.floor(0 + blockSizeH * offsetY + minY); y < blockSizeH * (offsetY + 1) + minY; y++) {
+              for (let x = Math.floor(0 + blockSizeW * offsetX + minX); x < blockSizeW * (offsetX + 1) + minX; x++) {
 
-                let pixelIndex = ((y*gridWidth+x)*4)
+                //let pixelIndex = ((y*gridWidth+x)*4)
 
-                sum += video.pixels[pixelIndex];
-                count++;
+                //r = video.pixels[pixelIndex];
+                //g = video.pixels[pixelIndex + 1];
+                //b = video.pixels[pixelIndex + 2];
+                
+                pixelColor = video.get(x, y);
+
+                r = red(pixelColor)
+                g = blue(pixelColor)
+                b = blue(pixelColor)
+
+                sum += (r + g + b) / 3
+
+                count++
+                
 
               }}
 
         
                 let average = sum / count;
 
-                console.log(average);
+                //console.log(average);
 
                       
 
                         // Paint each block with the average pixel intensity
-                  for   (let y = 0 + blockSizeH * offsetY; y < blockSizeH * (offsetY+1); y++) {
-                    for (let x = 0 + blockSizeW * offsetX; x < blockSizeW * (offsetX+1); x++) {
+                  for   (let y = Math.floor(0 + blockSizeH * offsetY + minY); y < (blockSizeH * (offsetY+1)) + minY; y++) {
+                    for (let x = Math.floor(0 + blockSizeW * offsetX + minX); x < (blockSizeW * (offsetX+1)) + minX; x++) {
 
-                  let pixelIndex = ((y*gridWidth+x)*4)
+                  //let pixelIndex = ((y*gridWidth+x)*4)
+
+                  
+                      video.set(x,y, 255)
 
 
-                  video.pixels[pixelIndex]     =  (255/5)*(offsetX+1);
-                  video.pixels[pixelIndex + 1] =  (255/5)*(offsetY+1);
-                  video.pixels[pixelIndex + 2] =  0;
+                  //video.pixels[pixelIndex]     =  average //(255/5)*(offsetX+1);
+                  //video.pixels[pixelIndex + 1] =  average //(255/5)*(offsetY+1);
+                  //video.pixels[pixelIndex + 2] =  average //0;
                 
                 }}
 
               }}
           
+            }
+  
+
+*/
+
+
+
+
+if(detections.length > 0) {
+
+
+
+
+
+
+
+
+  //console.log(maxX-minX)
+
+ //console.log(Math.floor((gridWidth/5)/8))
+
+
+
+  blockSizeH = (maxY-minY)/5
+  blockSizeW = (maxX-minX)/5
+
+
+
+  daW = Math.floor(maxX-minX)
+
+  daH = Math.floor(maxY-minY) 
+
+  bro = createImage(gridWidth,gridHeight);
+
+
+
+  for  (offsetY = 0; offsetY < 5; offsetY++){
+    for(offsetX = 0; offsetX < 5; offsetX++){
+
+      //console.log("offsetX --->",offsetX)
+      //console.log("offsetY --->",offsetY)
+
+
+            // Paint each block with the average pixel intensity
+            for   (let y = Math.floor(0 + blockSizeH * offsetY + minY); y < blockSizeH * (offsetY + 1) + minY; y++) {
+              
+               
+average = 0
+
+sum = 0
+
+count = 0
+              
+              for (let x = Math.floor(0 + blockSizeW * offsetX + minX); x < blockSizeW * (offsetX + 1) + minX; x++) {
+
+                //let pixelIndex = ((y*gridWidth+x)*4)
+
+                //r = video.pixels[pixelIndex];
+                //g = video.pixels[pixelIndex + 1];
+                //b = video.pixels[pixelIndex + 2];
+                
+                pixelColor = get(x+10, y+1060);
+
+                r = red(pixelColor)
+                g = blue(pixelColor)
+                b = blue(pixelColor)
+
+                sum += (r + g + b) / 3
+
+                count++
+                
+
+              }}
+
+        
+                average = sum / count;
+
+                //console.log("\n\n\n",average);
+
+                      
+
+                        // Paint each block with the average pixel intensity
+                  for   (let y = Math.floor(0 + blockSizeH * offsetY + minY); y < (blockSizeH * (offsetY+1)) + minY; y++) {
+                    for (let x = Math.floor(0 + blockSizeW * offsetX + minX); x < (blockSizeW * (offsetX+1)) + minX; x++) {
+
+                  let pixelIndex = ((minY*gridWidth+minX)*4)
+
+                      //video.pixels[pixelIndex]
+
+                     
+                      //someImage.set(x, y, average)
+                      
+                      laX = x
+                      laY = y
+
+                      console.log("X --->",laX)
+
+                      console.log("Y --->",laY)
+
+                      //bro.set(laX, laY,average);
+                      bro.loadPixels();
+
+
+                      broIndex = ((y*gridWidth+x)*4)
+
+                      console.log(bro.width)
+                      console.log(bro.pixels)
+
+                      bro.pixels[broIndex]   = average
+                      bro.pixels[broIndex+1] = average
+                      bro.pixels[broIndex+2] = average
+                      bro.pixels[broIndex+3] = 255
+
+                      bro.updatePixels();
+                      console.log(bro.pixels)
+
+                      //image(bro, 10+minX, 1060+minY);
+
+                  //video.pixels[pixelIndex]     =  average //(255/5)*(offsetX+1);
+                 // video.pixels[pixelIndex + 1] =  average //(255/5)*(offsetY+1);
+                  //video.pixels[pixelIndex + 2] =  average //0;
+                 // video.pixels[pixelIndex + 2] =  average
+                }}  
+
+              }}
+          
+
+
+           image(bro, 10, 1060, gridWidth, gridHeight);
+     
+            
+
+}
+
+
+
   console.log("\n\n\n END \n\n\n")
 
-  video.updatePixels();
-
-  image(video, 10, 1060, gridWidth, gridHeight);
+  //video.updatePixels();
 
 
 
-  }
+
+  
 
 
 }
@@ -1066,11 +1232,11 @@ function gotFaces(error, result) {
     return;
   }
 
-  console.log("NO ERROR YET?")
+  //console.log("NO ERROR YET?")
 
   detections = result;
 
-  console.log(detections)
+ // console.log(detections)
 
   faceapi.detect(gotFaces);
 }
