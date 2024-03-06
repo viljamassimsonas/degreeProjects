@@ -1191,7 +1191,13 @@ count = 0
                       //console.log(bro.width)
                       //console.log(bro.pixels)
 
-                     bro.set(x,y,average)
+                      //bro.pixels[broIndex]   = average
+                      //bro.pixels[broIndex+1] = average
+                      //bro.pixels[broIndex+2] = average
+                      //bro.pixels[broIndex+3] = 255
+
+                      bro.set(x,y,average)
+
 
                      // console.log(bro.pixels)
 
