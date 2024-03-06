@@ -759,6 +759,11 @@ if (detections.length > 0) {
 
         console.log("\n\n\n")
 
+        minY = minY-35
+        
+        minX = minX-17.5
+
+
  //console.log("- X --->", minX); // Output: Max X: 15
  // console.log("- Y --->", minY); // Output: Max Y: 30
 
@@ -798,6 +803,10 @@ if (detections.length > 0) {
 
   //console.log("+ X --->", maxX); // Output: Max X: 15
   //console.log("+ Y --->", maxY); // Output: Max Y: 30
+
+  maxX = maxX+17.5
+
+
 
   if (detections.length > 0) {
 
@@ -1091,7 +1100,7 @@ if(detections.length > 0) {
 
 
 
-  //console.log(maxX-minX)
+  //onsole.log(maxX-minX)
 
  //console.log(Math.floor((gridWidth/5)/8))
 
@@ -1108,6 +1117,7 @@ if(detections.length > 0) {
 
   bro = createImage(gridWidth,gridHeight);
 
+  bro.loadPixels();
 
 
   for  (offsetY = 0; offsetY < 5; offsetY++){
@@ -1169,37 +1179,37 @@ count = 0
                       laX = x
                       laY = y
 
-                      console.log("X --->",laX)
+                      //console.log("X --->",laX)
 
-                      console.log("Y --->",laY)
+                      //console.log("Y --->",laY)
 
                       //bro.set(laX, laY,average);
-                      bro.loadPixels();
 
 
                       broIndex = ((y*gridWidth+x)*4)
 
-                      console.log(bro.width)
-                      console.log(bro.pixels)
+                      //console.log(bro.width)
+                      //console.log(bro.pixels)
 
-                      bro.pixels[broIndex]   = average
-                      bro.pixels[broIndex+1] = average
-                      bro.pixels[broIndex+2] = average
-                      bro.pixels[broIndex+3] = 255
+                     bro.set(x,y,average)
 
-                      bro.updatePixels();
-                      console.log(bro.pixels)
+                     // console.log(bro.pixels)
 
                       //image(bro, 10+minX, 1060+minY);
 
                   //video.pixels[pixelIndex]     =  average //(255/5)*(offsetX+1);
-                 // video.pixels[pixelIndex + 1] =  average //(255/5)*(offsetY+1);
+                  //video.pixels[pixelIndex + 1] =  average //(255/5)*(offsetY+1);
                   //video.pixels[pixelIndex + 2] =  average //0;
-                 // video.pixels[pixelIndex + 2] =  average
+                  //video.pixels[pixelIndex + 2] =  average
                 }}  
 
-              }}
+              }
+            
+            
+            }
+         
           
+          bro.updatePixels();
 
 
            image(bro, 10, 1060, gridWidth, gridHeight);
