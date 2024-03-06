@@ -722,9 +722,11 @@ image(video, 710, 640, gridWidth, gridHeight);
 if (detections.length > 0) {
    points = detections[0].landmarks.positions; // <------------------ !!! MUST MAKE GLOBAL, LET ENCAPSULATES WITHIN THE 
   for (let i = 0; i < points.length; i++) {   // BLYATLOAD OF POINTS 
+    
     stroke(161, 95, 251);                     // MAKE FACE SHAPE
     strokeWeight(4);
     point(points[i]._x + 710, points[i]._y + 640);
+
   }
 
     //console.log(points)
@@ -847,15 +849,25 @@ if(detections.length > 0) {
           brightness += 51; // Increase brightness by 20%
           brightness = constrain(brightness, 0, 255); // Ensure brightness stays within 0-255 range
           
-          if (brightness >= 128) {
           
-          video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = brightness;
-            
-          } else {
 
+
+          if (brightness > 150) {
+          
+            video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 255;
+            
+          } else if (brightness < 125) {
+          
+          //
+          
             video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 0
 
+          } else {
+
+            video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = brightness;
+            
           }
+
        
 
         }
@@ -1333,7 +1345,7 @@ count = 0
   
             //let hsv = rgbToHsv(r, g, b);;
 
-            console.log(S*360)
+            //console.log(S*360)
 
             // Update pixel values
             video.pixels[i]     = H*60;
