@@ -2,7 +2,7 @@ let video;
 let snapshot;
 let gridWidth = 170*2;
 let gridHeight = 100*2;
-
+let faceapi
 
 let redThresholdSlider;
 let redThreshold = 0;
@@ -43,7 +43,7 @@ function setup() {
   test2 = true;
 
 
-  const faceOptions = { withLandmarks: true, withExpressions: false, withDescriptors: false };
+  const faceOptions = { withLandmarks: true, withExpressions: true, withDescriptors: true, minConfidence: 0.5 };
 
   faceapi = ml5.faceApi(video, faceOptions, faceReady);
 
@@ -673,16 +673,16 @@ video.pixels[i] = 0
   let Cr = 128  + 0.5 *       video.pixels[i] - 0.418688 *  video.pixels[i+1] - 0.081312 *  video.pixels[i+2];
 
 
-  let tY = 150;
-  let tB = 100;
-  let tR = 150;
+  let tY = 150 * (redThreshold/128);
+  let tB = 100 * (greenThreshold/128);
+  let tR = 150 * (blueThreshold/128);
 
  
   if (Y > tY && Cb > tB && Cr > tR) {
 
-    video.pixels[i] = 255; // Set red channel to maximum for segmentation
-    video.pixels[i + 1] = 0;
-    video.pixels[i + 2] = 0;
+    video.pixels[i] =     255  ; // Set red channel to maximum for segmentation
+    video.pixels[i + 1] = 0  ;
+    video.pixels[i + 2] = 0  ;
 
   } else {
 
@@ -1255,6 +1255,7 @@ count = 0
      
             
 
+           
 }
 
 
@@ -1333,7 +1334,7 @@ count = 0
   
             else if  (g == max & b != min) H = 3 - B
   
-            else if            (r == max ) H = 3 - B
+            else if             (r == max) H = 3 - B
   
             else if  (r == max & g == min) H = 3 + G
   
@@ -1348,9 +1349,10 @@ count = 0
             //console.log(S*360)
 
             // Update pixel values
-            video.pixels[i]     = H*60;
-            video.pixels[i + 1] = S*360;
-            video.pixels[i + 2] = V;
+            video.pixels[i]     = H *  60 * (redThreshold   / 128);
+            video.pixels[i + 1] = S * 360 * (greenThreshold / 128);
+            video.pixels[i + 2] =       V * (blueThreshold  / 128);
+
           }
         
 
@@ -1358,13 +1360,284 @@ count = 0
     // Update pixels on canvas
     video.updatePixels();
 
-
     image(video, 360, 1060, gridWidth, gridHeight);
+
+
+    for (let i = 0; i < restore.length; i++) {
+
+      video.pixels[i] = restore[i];
+  
+    }
+
+
+
+
+
+
+
+    video.updatePixels();
+
+    
+
+
+    image(video, 710, 1060, gridWidth, gridHeight);
+
+
+
+    if (detections.length > 0) {
+
+
+      faceOutline = detections[0].landmarks
+      
+
+      console.log(detections[0])
+
+
+
+
+
+    //  constructor
+    //  getJawOutline
+    //  getLeftEye
+    //  getLeftEyeBrow
+    //  getMouth
+    //  getNose
+    //  getRefPointsForAlignment
+    //  getRightEye
+    //  getRightEyeBrow
+
+
+
+
+
+    jawLine = detections[0].landmarks.getJawOutline()
+
+    fill("gold");
+    strokeWeight(5);
+    stroke("red");
+    beginShape();
+    for (let i = 0; i < jawLine.length; i++){
+
+      console.log(jawLine[0]._x)
+      vertex( 710+jawLine[i]._x, minY+1060-jawLine[i]._y+1.5*jawLine[0]._y)
+
+    }
+    endShape();
+
+
+      //////////////////////////////////////////////////////////////
+    
+      jawLine = detections[0].landmarks.getJawOutline()
+
+      fill("gold");
+      strokeWeight(5);
+      stroke("red");
+      beginShape();
+      for (let i = 0; i < jawLine.length; i++){
+
+        console.log(jawLine[0]._x)
+        vertex( 710+jawLine[i]._x, 1060+jawLine[i]._y)
+
+      }
+      endShape();
+
+      //////////////////////////////////////////////////
+
+      jawLine = detections[0].landmarks.getLeftEye()
+
+      fill("aqua");
+      strokeWeight(1);
+      stroke("aqua");
+      beginShape();
+      for (let i = 0; i < jawLine.length; i++){
+
+        console.log(jawLine[0]._x)
+        vertex( 710+jawLine[i]._x, 1060+jawLine[i]._y)
+
+      }
+      endShape();
+
+    
+
+    jawLine = detections[0].landmarks.getRightEye()
+
+    fill("aqua");
+    strokeWeight(1);
+    stroke("aqua");
+    beginShape();
+    for (let i = 0; i < jawLine.length; i++){
+
+      console.log(jawLine[0]._x)
+      
+      vertex( 710+jawLine[i]._x, 1060+jawLine[i]._y)
+
+    }
+    endShape();
+
+
+    jawLine = detections[0].landmarks.getMouth()
+
+
+    fill("grey");
+    strokeWeight(0.5);
+    stroke("grey");
+    beginShape();
+    for (let i = 0; i < jawLine.length; i++){
+
+      console.log(jawLine[0]._x)
+      vertex( 710+jawLine[i]._x, 1060+jawLine[i]._y)
+
+    }
+    endShape();
+
+    jawLine = detections[0].landmarks.getNose()
+
+    fill("grey");
+    strokeWeight(5);
+    stroke("grey");
+    beginShape();
+    for (let i = 0; i < jawLine.length; i++){
+
+      console.log(jawLine[0]._x)
+      vertex( 710+jawLine[i]._x, 1060+jawLine[i]._y)
+
+    }
+    endShape();
+
+    
+    drawExpressions(detections, 710, 1070, 14)
+  }
+
+}
+
+
+function drawExpressions(detections, x, y, textYSpace){
+
+  console.log(detections[0])
+
+  if(detections.length > 0){//If at least 1 face is detected
+    
+    
+  console.log("BLYAT")
+    
+    let {neutral, happy, angry, sad, disgusted, surprised, fearful} = detections[0].expressions; // <--- some sort of initialiser of variables
+
+    console.log(detections[0].expressions)
+
+
+    maxKey = Object.keys(detections[0].expressions).reduce((a,b)=>detections[0].expressions[a]>detections[0].expressions[b]?a:b);
+
+
+    console.log(maxKey);
+
+
+    if (maxKey==angry) {
+
+
+    }
+
+    if (maxKey==disgusted) {
+
+
+    }
+    
+    if (maxKey==fearful) {
+
+
+    }
+
+    if (maxKey==happy) {
+
+
+    }
+
+    if (maxKey==sad) {
+
+
+    }
+
+    if (maxKey==surprised) {
+
+
+    }
+
+
+
+    /*
+    condicion = true
+    maxX = points.reduce((acc, cur) => {
+
+      if (condicion){
+
+        acc = 0
+
+        condicion = false
+
+      }
+      
+      return Math.max(acc, cur._x)});
+      */
+
+
+
+    textFont('Helvetica Neue');
+    textSize(14);
+    noStroke();
+    fill(44, 169, 225);
+
+    text("neutral:       "  + nf(neutral*100, 2, 2)   +"%", x, y);
+    text("happiness: "      + nf(happy*100, 2, 2)     +"%", x, y+textYSpace);
+    text("anger:        "   + nf(angry*100, 2, 2)     +"%", x, y+textYSpace*2);
+    text("sad:            " + nf(sad*100, 2, 2)       +"%", x, y+textYSpace*3);
+    text("disgusted: "      + nf(disgusted*100, 2, 2) +"%", x, y+textYSpace*4);
+    text("surprised:  "     + nf(surprised*100, 2, 2) +"%", x, y+textYSpace*5);
+    text("fear:           " + nf(fearful*100, 2, 2)   +"%", x, y+textYSpace*6);
+  }else{//If no faces is detected
+    text("neutral: ", x, y);
+    text("happiness: ", x, y + textYSpace);
+    text("anger: ", x, y + textYSpace*2);
+    text("sad: ", x, y + textYSpace*3);
+    text("disgusted: ", x, y + textYSpace*4);
+    text("surprised: ", x, y + textYSpace*5);
+    text("fear: ", x, y + textYSpace*6);
+  }
 
 
 
 
 }
+
+
+
+
+function gotFaces(error, result) {
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  console.log(result)
+  //console.log("NO ERROR YET?")
+
+  detections = result;
+
+ // console.log(detections)
+
+  faceapi.detect(gotFaces);
+}
+
+
+
+
+function faceReady() {
+
+  console.log("MODEL LOADED")
+
+  faceapi.detect(gotFaces);
+}
+
+
+
 
 // Helper function to convert RGB to HSV
 function rgbToHsv(r, g, b) {
@@ -1518,27 +1791,3 @@ function rgbToHsv(r, g, b) {
 
 
 
-function gotFaces(error, result) {
-  if (error) {
-    console.log(error);
-    return;
-  }
-
-  //console.log("NO ERROR YET?")
-
-  detections = result;
-
- // console.log(detections)
-
-  faceapi.detect(gotFaces);
-}
-
-
-
-
-function faceReady() {
-
-  console.log("MODEL LOADED")
-
-  faceapi.detect(gotFaces);
-}
