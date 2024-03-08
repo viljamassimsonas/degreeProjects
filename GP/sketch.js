@@ -935,28 +935,20 @@ if(detections.length > 0) {
   
             //////////////////////////////////////////////////////////
             
-            if                    (S == 0) H = 0
-  
+            if                    (S == 0) H = 0 
             else if  (r == max & g == min) H = 5 + B
-  
-            else if  (r == max & g != min) H = 1 - G
-  
-            else if  (g == max & b == min) H = R + 1
-  
-            else if  (g == max & b != min) H = 3 - B
-  
+            else if  (r == max & g != min) H = 1 - G 
+            else if  (g == max & b == min) H = R + 1 
+            else if  (g == max & b != min) H = 3 - B  
             else if             (r == max) H = 3 - B
-  
             else if  (r == max & g == min) H = 3 + G
-  
             else                           H = 5 - R
   
             // Update pixel values
             video.pixels[i]     = H *  60 * (redThreshold   / 128);
             video.pixels[i + 1] = S * 360 * (greenThreshold / 128);
             video.pixels[i + 2] =       V * (blueThreshold  / 128);
-
-          }
+    }
         
 
 
@@ -973,13 +965,9 @@ if(detections.length > 0) {
     }
 
 
-
     video.updatePixels();
 
-
-
     image(video, 710, 1060, gridWidth, gridHeight);
-
 
 
     if (detections.length > 0) {
@@ -988,8 +976,7 @@ if(detections.length > 0) {
       
       drawExpressions(detections, 710, 1070, 14)
   
-      }
-
+    }
 }
 
 
@@ -1002,22 +989,17 @@ function drawExpressions(detections, x, y, textYSpace){
     
     console.log("BLYAT")
       
-      // assigns each var the value of each key in the dict
+   // assigns each var the value of each key in the dict
       let {neutral, happy, angry, sad, disgusted, surprised, fearful} = detections[0].expressions; 
-
 
       maxExpression = Object.keys(detections[0].expressions).reduce((a,b)=>detections[0].expressions[a]>detections[0].expressions[b]?a:b);
 
-      //maxExpression = Object.keys(detections[0].expressions)[Math.floor(Math.random() * 7)]
+   // maxExpression = Object.keys(detections[0].expressions)[Math.floor(Math.random() * 7)]
 
-      //console.log(maxExpression);
-
-
-      fX = x + minX - 0.25*(maxX-minX), 
-      fY = y + minY - 0.25*(maxY-minY), 
-      wX = 1.5*(maxX-minX), 
-      wY = 1.5*(maxY-minY)
-
+      fX = x + minX - 0.25*(maxX-minX); 
+      fY = y + minY - 0.25*(maxY-minY);
+      wX = 1.5*(maxX-minX);
+      wY = 1.5*(maxY-minY);
 
       if      (maxExpression == "angry")     image(angrySVG,     fX, fY, wX, wY);
       else if (maxExpression == "disgusted") image(disgustedSVG, fX, fY, wX, wY);
@@ -1027,24 +1009,20 @@ function drawExpressions(detections, x, y, textYSpace){
       else if (maxExpression == "sad")       image(sadSVG,       fX, fY, wX, wY);
       else if (maxExpression == "surprised") image(surprisedSVG, fX, fY, wX, wY);
 
-
       textFont('Helvetica Neue');
       textSize(14);
       noStroke();
       fill(44, 169, 225);
 
-      text("neutral:       "  + nf(neutral*100, 2, 2)    +"%", x, y);
-      text("happiness: "      + nf(happy*100, 2, 2)      +"%", x, y+textYSpace);
-      text("anger:        "   + nf(angry*100, 2, 2)      +"%", x, y+textYSpace*2);
-      text("sad:            " + nf(sad*100, 2, 2)        +"%", x, y+textYSpace*3);
-      text("disgusted:  "     + nf(disgusted*100, 2, 2) +"%", x, y+textYSpace*4);
-      text("surprised:  "     + nf(surprised*100, 2, 2)  +"%", x, y+textYSpace*5);
-      text("fear:           " + nf(fearful*100, 2, 2)    +"%", x, y+textYSpace*6);
-
+      text("neutral:       "  + nf(neutral   * 100, 2, 2) + "%", x, y);
+      text("happiness: "      + nf(happy     * 100, 2, 2) + "%", x, y + textYSpace);
+      text("anger:        "   + nf(angry     * 100, 2, 2) + "%", x, y + textYSpace * 2);
+      text("sad:            " + nf(sad       * 100, 2, 2) + "%", x, y + textYSpace * 3);
+      text("disgusted:  "     + nf(disgusted * 100, 2, 2) + "%", x, y + textYSpace * 4);
+      text("surprised:  "     + nf(surprised * 100, 2, 2) + "%", x, y + textYSpace * 5);
+      text("fear:           " + nf(fearful   * 100, 2, 2) + "%", x, y + textYSpace * 6);
   }
 }
-
-
 
 
 function gotFaces(error, result) {
@@ -1053,12 +1031,7 @@ function gotFaces(error, result) {
     return;
   }
 
-  console.log(result)
-  //console.log("NO ERROR YET?")
-
   detections = result;
-
- // console.log(detections)
 
   faceapi.detect(gotFaces);
 }
