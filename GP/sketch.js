@@ -1552,9 +1552,9 @@ function drawExpressions(detections, x, y, textYSpace){
 
       maxExpression = Object.keys(detections[0].expressions)[Math.floor(Math.random() * 7)]
 
-
       console.log(maxExpression);
 
+      
       fX = x + minX - 0.25*(maxX-minX), 
       fY = y + minY - 0.25*(maxY-minY), 
       wX = 1.5*(maxX-minX), 
@@ -1570,12 +1570,10 @@ function drawExpressions(detections, x, y, textYSpace){
       if (maxExpression == "surprised") image(surprisedSVG, fX, fY, wX, wY);
 
 
-
     textFont('Helvetica Neue');
     textSize(14);
     noStroke();
     fill(44, 169, 225);
-
 
     text("neutral:       "  + nf(neutral*100, 2, 2)   +"%", x, y);
     text("happiness: "      + nf(happy*100, 2, 2)     +"%", x, y+textYSpace);
@@ -1585,9 +1583,7 @@ function drawExpressions(detections, x, y, textYSpace){
     text("surprised:  "     + nf(surprised*100, 2, 2) +"%", x, y+textYSpace*5);
     text("fear:           " + nf(fearful*100, 2, 2)   +"%", x, y+textYSpace*6);
 
-
   }
-
 }
 
 
