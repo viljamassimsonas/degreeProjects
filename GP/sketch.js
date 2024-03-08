@@ -1539,22 +1539,17 @@ function drawExpressions(detections, x, y, textYSpace){
     
     console.log("BLYAT")
       
-
-      let {neutral, happy, angry, sad, disgusted, surprised, fearful} = detections[0].expressions; // <--- some sort of initialiser of variables
-
-
-      console.log(detections[0].expressions)
-
-      console.log(neutral)
+      // assigns each var the value of each key in the dict
+      let {neutral, happy, angry, sad, disgusted, surprised, fearful} = detections[0].expressions; 
 
 
       maxExpression = Object.keys(detections[0].expressions).reduce((a,b)=>detections[0].expressions[a]>detections[0].expressions[b]?a:b);
 
-      maxExpression = Object.keys(detections[0].expressions)[Math.floor(Math.random() * 7)]
+      //maxExpression = Object.keys(detections[0].expressions)[Math.floor(Math.random() * 7)]
 
-      console.log(maxExpression);
+      //console.log(maxExpression);
 
-      
+
       fX = x + minX - 0.25*(maxX-minX), 
       fY = y + minY - 0.25*(maxY-minY), 
       wX = 1.5*(maxX-minX), 
@@ -1570,18 +1565,18 @@ function drawExpressions(detections, x, y, textYSpace){
       if (maxExpression == "surprised") image(surprisedSVG, fX, fY, wX, wY);
 
 
-    textFont('Helvetica Neue');
-    textSize(14);
-    noStroke();
-    fill(44, 169, 225);
+      textFont('Helvetica Neue');
+      textSize(14);
+      noStroke();
+      fill(44, 169, 225);
 
-    text("neutral:       "  + nf(neutral*100, 2, 2)   +"%", x, y);
-    text("happiness: "      + nf(happy*100, 2, 2)     +"%", x, y+textYSpace);
-    text("anger:        "   + nf(angry*100, 2, 2)     +"%", x, y+textYSpace*2);
-    text("sad:            " + nf(sad*100, 2, 2)       +"%", x, y+textYSpace*3);
-    text("disgusted:  "      + nf(disgusted*100, 2, 2) +"%", x, y+textYSpace*4);
-    text("surprised:  "     + nf(surprised*100, 2, 2) +"%", x, y+textYSpace*5);
-    text("fear:           " + nf(fearful*100, 2, 2)   +"%", x, y+textYSpace*6);
+      text("neutral:       "  + nf(neutral*100, 2, 2)    +"%", x, y);
+      text("happiness: "      + nf(happy*100, 2, 2)      +"%", x, y+textYSpace);
+      text("anger:        "   + nf(angry*100, 2, 2)      +"%", x, y+textYSpace*2);
+      text("sad:            " + nf(sad*100, 2, 2)        +"%", x, y+textYSpace*3);
+      text("disgusted:  "     + nf(disgusted*100, 2, 2) +"%", x, y+textYSpace*4);
+      text("surprised:  "     + nf(surprised*100, 2, 2)  +"%", x, y+textYSpace*5);
+      text("fear:           " + nf(fearful*100, 2, 2)    +"%", x, y+textYSpace*6);
 
   }
 }
