@@ -733,25 +733,26 @@ if (detections.length > 0) {
 
 if(detections.length > 0) {
 
-   for (let x = 0; x < gridWidth; x++) {
-
+   for    (let x = 0; x < gridWidth;  x++) {
       for (let y = 0; y < gridHeight; y++) {
 
         if ((x >= minX & x <=maxX) && (y >= minY & y <=maxY)) {
 
           let i = ((y*gridWidth+x)*4)
+
           let r = video.pixels[i];
           let g = video.pixels[i + 1];
           let b = video.pixels[i + 2];
+
           let brightness = (r + g + b) / 3;
           brightness += 51;                           // Increase brightness by 20%
           brightness = constrain(brightness, 0, 255); // Ensure brightness stays within 0-255 range
           
-          if (brightness > 150)       video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 255;
+          if      (brightness > 150) video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 255;
 
-          else if (brightness < 125)  video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 0
+          else if (brightness < 125) video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 0
 
-          else                        video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = brightness;
+          else                       video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = brightness;
 
         }
       }
@@ -791,12 +792,9 @@ if(detections.length > 0) {
   if(detections.length > 0) {
 
 
-    for (let x = 0; x < gridWidth; x++) {
- 
+    for    (let x = 0; x < gridWidth;  x++) {
        for (let y = 0; y < gridHeight; y++) {
- 
-         //console.log(x," ",y,"\n")
- 
+  
          if ((x >= minX & x <=maxX) && (y >= minY & y <=maxY)) {
  
           let sum = [0, 0, 0];
@@ -816,57 +814,11 @@ if(detections.length > 0) {
           }
         }
  
-         }
-       }
+      }
+     }
    } 
 
-
-
-   video.updatePixels();
-  
-  
-   image(video, 360, 850, gridWidth, gridHeight);
- 
- 
-   for (let i = 0; i < restore.length; i++) {
- 
-     video.pixels[i] = restore[i];
- 
-   }
-   
- 
-   video.updatePixels();
-
-
-
-
-
-
-  video.updatePixels();
-  
-
-  image(video, 710, 850, gridWidth, gridHeight);
-
-
-  for (let i = 0; i < restore.length; i++) {
-
-    video.pixels[i] = restore[i];
-
-  }
-  
-
-  video.updatePixels();
-
-  sum = 0
-
-  count = 0
-
-  video.updatePixels();
-
-  image(video, 10, 1060, gridWidth, gridHeight);
-
-
-  if(detections.length > 0) {
+   if(detections.length > 0) {
     // BLYAT
     blockSizeH = (maxY-minY)/5
     blockSizeW = (maxX-minX)/5
@@ -904,6 +856,36 @@ if(detections.length > 0) {
   }
 
 
+
+   video.updatePixels();
+  
+  
+   image(video, 10, 850, gridWidth, gridHeight);
+ 
+ 
+   for (let i = 0; i < restore.length; i++) {
+ 
+     video.pixels[i] = restore[i];
+ 
+   }
+   
+ 
+  video.updatePixels();
+
+
+  image(video, 710, 850, gridWidth, gridHeight);
+
+
+  sum = 0
+
+  count = 0
+
+  video.updatePixels();
+
+  image(video, 10, 1060, gridWidth, gridHeight);
+
+
+
   for (let i = 0; i < restore.length; i++) {
 
     video.pixels[i] = restore[i];
@@ -921,14 +903,13 @@ if(detections.length > 0) {
             let g = video.pixels[i + 1];
             let b = video.pixels[i + 2];
 
-            // Convert RGB to HSV
+            //////////////////////////////////////////////////////
 
             max = Math.max(r, g, b)
           
-
             min = Math.min(r, g, b)
   
-            ////////////////////////////////////////////
+            /////////////////////////////////////////////////////
   
   
             S = (max - min) / max;
@@ -1038,13 +1019,13 @@ function drawExpressions(detections, x, y, textYSpace){
       wY = 1.5*(maxY-minY)
 
 
-      if (maxExpression == "angry")     image(angrySVG,     fX, fY, wX, wY);
-      if (maxExpression == "disgusted") image(disgustedSVG, fX, fY, wX, wY);
-      if (maxExpression == "fearful")   image(fearfulSVG,   fX, fY, wX, wY);
-      if (maxExpression == "happy")     image(happySVG,     fX, fY, wX, wY);
-      if (maxExpression == "neutral")   image(neutralSVG,   fX, fY, wX, wY);
-      if (maxExpression == "sad")       image(sadSVG,       fX, fY, wX, wY);
-      if (maxExpression == "surprised") image(surprisedSVG, fX, fY, wX, wY);
+      if      (maxExpression == "angry")     image(angrySVG,     fX, fY, wX, wY);
+      else if (maxExpression == "disgusted") image(disgustedSVG, fX, fY, wX, wY);
+      else if (maxExpression == "fearful")   image(fearfulSVG,   fX, fY, wX, wY);
+      else if (maxExpression == "happy")     image(happySVG,     fX, fY, wX, wY);
+      else if (maxExpression == "neutral")   image(neutralSVG,   fX, fY, wX, wY);
+      else if (maxExpression == "sad")       image(sadSVG,       fX, fY, wX, wY);
+      else if (maxExpression == "surprised") image(surprisedSVG, fX, fY, wX, wY);
 
 
       textFont('Helvetica Neue');
