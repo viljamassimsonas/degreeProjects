@@ -29,6 +29,25 @@ let detections = 0;
 
 let points = null;
 
+
+//let svgTest;
+
+
+function preload(){
+
+
+  angrySVG     = loadImage("angry.svg");
+  disgustedSVG = loadImage("disgusted.svg");
+  fearfulSVG   = loadImage("fearful.svg");
+  happySVG     = loadImage("happy.svg");
+  neutralSVG   = loadImage("neutral.svg");
+  sadSVG       = loadImage("sad.svg");
+  surprisedSVG = loadImage("surprised.svg");
+
+
+}
+
+
 function setup() {
   createCanvas(1100, 1500);
   
@@ -1408,7 +1427,7 @@ count = 0
 
 
 
-
+/*
 
     jawLine = detections[0].landmarks.getJawOutline()
 
@@ -1504,7 +1523,7 @@ count = 0
     }
     endShape();
 
-    
+    */
     drawExpressions(detections, 710, 1070, 14)
   }
 
@@ -1518,65 +1537,37 @@ function drawExpressions(detections, x, y, textYSpace){
   if(detections.length > 0){//If at least 1 face is detected
     
     
-  console.log("BLYAT")
-    
-    let {neutral, happy, angry, sad, disgusted, surprised, fearful} = detections[0].expressions; // <--- some sort of initialiser of variables
-
-    console.log(detections[0].expressions)
-
-
-    maxKey = Object.keys(detections[0].expressions).reduce((a,b)=>detections[0].expressions[a]>detections[0].expressions[b]?a:b);
-
-
-    console.log(maxKey);
-
-
-    if (maxKey==angry) {
-
-
-    }
-
-    if (maxKey==disgusted) {
-
-
-    }
-    
-    if (maxKey==fearful) {
-
-
-    }
-
-    if (maxKey==happy) {
-
-
-    }
-
-    if (maxKey==sad) {
-
-
-    }
-
-    if (maxKey==surprised) {
-
-
-    }
-
-
-
-    /*
-    condicion = true
-    maxX = points.reduce((acc, cur) => {
-
-      if (condicion){
-
-        acc = 0
-
-        condicion = false
-
-      }
+    console.log("BLYAT")
       
-      return Math.max(acc, cur._x)});
-      */
+
+      let {neutral, happy, angry, sad, disgusted, surprised, fearful} = detections[0].expressions; // <--- some sort of initialiser of variables
+
+
+      console.log(detections[0].expressions)
+
+      console.log(neutral)
+
+
+      maxExpression = Object.keys(detections[0].expressions).reduce((a,b)=>detections[0].expressions[a]>detections[0].expressions[b]?a:b);
+
+      maxExpression = Object.keys(detections[0].expressions)[Math.floor(Math.random() * 7)]
+
+
+      console.log(maxExpression);
+
+      fX = x + minX - 0.25*(maxX-minX), 
+      fY = y + minY - 0.25*(maxY-minY), 
+      wX = 1.5*(maxX-minX), 
+      wY = 1.5*(maxY-minY)
+
+
+      if (maxExpression == "angry")     image(angrySVG,     fX, fY, wX, wY);
+      if (maxExpression == "disgusted") image(disgustedSVG, fX, fY, wX, wY);
+      if (maxExpression == "fearful")   image(fearfulSVG,   fX, fY, wX, wY);
+      if (maxExpression == "happy")     image(happySVG,     fX, fY, wX, wY);
+      if (maxExpression == "neutral")   image(neutralSVG,   fX, fY, wX, wY);
+      if (maxExpression == "sad")       image(sadSVG,       fX, fY, wX, wY);
+      if (maxExpression == "surprised") image(surprisedSVG, fX, fY, wX, wY);
 
 
 
@@ -1585,25 +1576,17 @@ function drawExpressions(detections, x, y, textYSpace){
     noStroke();
     fill(44, 169, 225);
 
+
     text("neutral:       "  + nf(neutral*100, 2, 2)   +"%", x, y);
     text("happiness: "      + nf(happy*100, 2, 2)     +"%", x, y+textYSpace);
     text("anger:        "   + nf(angry*100, 2, 2)     +"%", x, y+textYSpace*2);
     text("sad:            " + nf(sad*100, 2, 2)       +"%", x, y+textYSpace*3);
-    text("disgusted: "      + nf(disgusted*100, 2, 2) +"%", x, y+textYSpace*4);
+    text("disgusted:  "      + nf(disgusted*100, 2, 2) +"%", x, y+textYSpace*4);
     text("surprised:  "     + nf(surprised*100, 2, 2) +"%", x, y+textYSpace*5);
     text("fear:           " + nf(fearful*100, 2, 2)   +"%", x, y+textYSpace*6);
-  }else{//If no faces is detected
-    text("neutral: ", x, y);
-    text("happiness: ", x, y + textYSpace);
-    text("anger: ", x, y + textYSpace*2);
-    text("sad: ", x, y + textYSpace*3);
-    text("disgusted: ", x, y + textYSpace*4);
-    text("surprised: ", x, y + textYSpace*5);
-    text("fear: ", x, y + textYSpace*6);
+
+
   }
-
-
-
 
 }
 
@@ -1637,141 +1620,6 @@ function faceReady() {
 }
 
 
-
-
-// Helper function to convert RGB to HSV
-function rgbToHsv(r, g, b) {
-
-
-
-          max = Math.max(r, g, b)
-          
-
-          min = Math.min(r, g, b)
-
-          ////////////////////////////////////////////
-
-
-          S = (max - min) / max;
-          
-          if (!S) S = 0
-
-          V = max;
-        
-          //////////////////////////////////////////////////////
-          
-          R = ((max-r)/(max-min));
-
-          if (!R) R = 0
-
-          G = ((max-g)/(max-min));
-
-          if (!G) G = 0
-
-          B = ((max-b)/(max-min));
-
-          if (!B) B = 0
-
-
-          console.log("r ---->",r)
-
-          console.log("g ---->",g)
-
-          console.log("b ---->",b)
-
-          console.log("\n")
-
-          console.log("max ---->",max)
-
-          console.log("min ---->",min)
-
-          console.log("\n")
-
-          console.log("R ---->",R)
-
-          console.log("G ---->",G)
-
-          console.log("B ---->",B)
-
-          console.log("\n")
-
-          //////////////////////////////////////////////////////////
-          
-          if                    (S == 0) H = 0
-
-          else if  (r == max & g == min) H = 5 + B
-
-          else if  (r == max & g != min) H = 1 - G
-
-          else if  (g == max & b == min) H = R + 1
-
-          else if  (g == max & b != min) H = 3 - B
-
-          else if            (r == max ) H = 3 - B
-
-          else if  (r == max & g == min) H = 3 + G
-
-          else                           H = 5 - R
-
-          //H = H * 60
-
-          console.log("HUE ---->",H)
-
-          return [H*60, S*100, V]
-
-          ////////////////////////////////////////////////////////////
-
-          //hex = H / 60
-
-          if (!hex) hex = 0
-
-          /////////////////////////////////////////////////////////////
-
-          console.log("HEX ---->",hex)
-
-          primary = floor(hex)
-
-          if (!primary) primary = 0
-
-          ///////////////////////////////////////////////////////////
-
-          secondary = hex - primary
-
-          if (!secondary) secondary = 0
-
-          ///////////////////////////////////////////////////////////
-
-          a = (1 - S) * V
-
-          if (!a) a = 0
-
-          b = (1 - (S * secondary)) * V
-
-          if (!b) b = 0
-
-          c = (1 - (S * (1 - secondary))) * V
-
-          if (!c) c = 0
-          ////////////////////////////////////////////////////////////
-
-          console.log("RETURN AREA")
-
-          console.log(primary)
-
-          if (primary == 0) return [V, c, a]
-
-          if (primary == 1) return [b, V, a]
-
-          if (primary == 2) return [a, V, c]
-
-          if (primary == 3) return [a, b, V]
-
-          if (primary == 4) return [c, a, V]
-
-          if (primary == 5) return [V, a, b]
-
-          console.log("NO RETURN")
-}
 
 
 
