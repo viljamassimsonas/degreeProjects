@@ -92,16 +92,18 @@ function setup() {
 
   // Create red threshold slider
   redThresholdSlider = createSlider(0, 255, 128);
-  redThresholdSlider.position(10, 600);
+  redThresholdSlider.position(10, 610);
   redThresholdSlider.input(updateRedThreshold); // u see input
 
   greenThresholdSlider = createSlider(0, 255, 128);
-  greenThresholdSlider.position(400, 600);
+  greenThresholdSlider.position(360, 610);
   greenThresholdSlider.input(updateGreenThreshold);
 
   blueThresholdSlider = createSlider(0, 255, 128);
-  blueThresholdSlider.position(800, 600);
+  blueThresholdSlider.position(710, 610);
   blueThresholdSlider.input(updateBlueThreshold);
+
+
 
   yThresholdSlider = createSlider(0, 255, 128);
   yThresholdSlider.position(360, 1055);
@@ -393,9 +395,10 @@ for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};
   
 for (let i = 0; i < video.pixels.length; i += 4) {
         
-  video.pixels[i + 1] = video.pixels[i + 2] = 0; 
-
-  video.pixels[i] >= redThreshold ? video.pixels[i] = 255 : video.pixels[i] = 0; 
+  if (video.pixels[i] >= redThreshold) 
+      
+       video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 255;
+  else video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 0;
 
 }
   
@@ -418,9 +421,10 @@ for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};
 
 for (let i = 0; i < video.pixels.length; i += 4) {
         
-  video.pixels[i] = video.pixels[i + 2] = 0; 
-
-  video.pixels[i + 1] >= greenThreshold ? video.pixels[i + 1] = 255 : video.pixels[i + 1] = 0; 
+  if  (video.pixels[i + 1] >= greenThreshold) 
+      
+       video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 255;
+  else video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 0;
 
 }
 
@@ -446,9 +450,10 @@ for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];}
 
 for (let i = 0; i < video.pixels.length; i += 4) {
         
-  video.pixels[i] = video.pixels[i + 1] = 0; 
-
-  video.pixels[i + 2] >= blueThreshold ? video.pixels[i + 2] = 255 : video.pixels[i + 2] = 0; 
+  if  (video.pixels[i + 2] >= blueThreshold) 
+      
+       video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 255;
+  else video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 0;
 
 }
 
@@ -645,18 +650,18 @@ for (let i = 0; i < video.pixels.length; i += 4) {
 
   } else if (cond1.value() == 2) {
 
-    Y  =   0.2215 * video.pixels[i] + 0.7154 * video.pixels[i+1] + 0.0721 * video.pixels[i+2] + yThreshold
-    Cb =  -0.1145 * video.pixels[i] - 0.3855 * video.pixels[i+1] + 0.5000 * video.pixels[i+2] + cbThreshold
-    Cr =   0.5016 * video.pixels[i] - 0.4556 * video.pixels[i+1] + 0.0459 * video.pixels[i+2] + crThreshold
-  
-    if ( Y >=  yThreshold) video.pixels[i]     = Y + 0.0000 * Cb + 1.5701 * Cr 
-    else                   video.pixels[i]     = 255
+      Y  =   0.2215 * video.pixels[i] + 0.7154 * video.pixels[i+1] + 0.0721 * video.pixels[i+2] + yThreshold
+      Cb =  -0.1145 * video.pixels[i] - 0.3855 * video.pixels[i+1] + 0.5000 * video.pixels[i+2] + cbThreshold
+      Cr =   0.5016 * video.pixels[i] - 0.4556 * video.pixels[i+1] + 0.0459 * video.pixels[i+2] + crThreshold
     
-    if (Cb >= cbThreshold) video.pixels[i + 1] = Y - 0.1870 * Cb - 0.4664 * Cr
-    else                   video.pixels[i + 1] = 0
+      if ( Y >=  yThreshold) video.pixels[i]     = Y + 0.0000 * Cb + 1.5701 * Cr 
+      else                   video.pixels[i]     = 255
       
-    if (Cr >= crThreshold) video.pixels[i + 2] = Y - 1.8556 * Cb + 0.0000 * Cr 
-    else                   video.pixels[i + 2] = 0
+      if (Cb >= cbThreshold) video.pixels[i + 1] = Y - 0.1870 * Cb - 0.4664 * Cr
+      else                   video.pixels[i + 1] = 0
+        
+      if (Cr >= crThreshold) video.pixels[i + 2] = Y - 1.8556 * Cb + 0.0000 * Cr 
+      else                   video.pixels[i + 2] = 0
 }
 }
 
