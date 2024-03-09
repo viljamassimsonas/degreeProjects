@@ -593,78 +593,17 @@ video.updatePixels();
 /////////////////////// START FACE FILTERS //////////////////////////////////
 
 
-if (detections.length > 0) {
- 
-  points = detections[0].landmarks.positions; // <------------------ !!! MUST MAKE GLOBAL, LET ENCAPSULATES WITHIN THE 
-
-    condicion = true
-    minX = points.reduce((acc, cur) => {
-
-      if (condicion){
-
-        acc = Number.POSITIVE_INFINITY
-        condicion = false
-
-      }
-      
-      return Math.min(acc, cur._x)});
-
-      condicion = true
-      minY = points.reduce((acc, cur) => {
-  
-        if (condicion){
-  
-          acc = Number.POSITIVE_INFINITY
-  
-          condicion = false
-  
-        } 
-        return Math.min(acc, cur._y)});
-
-        minY = minY-35
-        minX = minX-17.5
-
-
-    condicion = true
-    maxX = points.reduce((acc, cur) => {
-
-      if (condicion){
-
-        acc = 0
-
-        condicion = false
-
-      }
-      
-      return Math.max(acc, cur._x)});
-
-      condicion = true
-      maxY = points.reduce((acc, cur) => {
-  
-        if (condicion){
-  
-          acc = 0
-  
-          condicion = false
-  
-        } 
-        
-        return Math.max(acc, cur._y)});
-
-
-  maxX = maxX+17.5
-
-        console.log(detections)
- 
-  }
-
-
- for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};
-
-
 if(detections.length > 0) {
 
-      console.log(cond2.value())
+      points = detections[0].landmarks.positions; // <------------------ !!! MUST MAKE GLOBAL, LET ENCAPSULATES WITHIN THE 
+
+      boxP = detections[0].detection._box
+
+      minX = boxP._x - 5
+      maxX = boxP._x + boxP._width  + 5
+
+      minY = boxP._y - 5
+      maxY = boxP._y + boxP._height + 5
 
       if(cond2.value() == 0) {
 
@@ -776,15 +715,16 @@ if(detections.length > 0) {
         } 
 
         if(cond2.value() == "Pixelated_Face") {
+          
           image(video, 10, 850, gridWidth, gridHeight);
-          // BLYAT
+
           blockSizeH = (maxY-minY)/5
           blockSizeW = (maxX-minX)/5
           daW = Math.floor(maxX-minX)
           daH = Math.floor(maxY-minY) 
           bro = createImage(gridWidth,gridHeight);
           bro.loadPixels();
-          // KURWA
+
           for  (offsetY = 0; offsetY < 5; offsetY++){
             for(offsetX = 0; offsetX < 5; offsetX++){
                     // Paint each block with the average pixel intensity
@@ -851,10 +791,10 @@ function drawExpressions(detections, x, y, ySpace){
 
    // maxExpression = Object.keys(detections[0].expressions)[Math.floor(Math.random() * 7)]
 
-      fX = x + minX - 0.25*(maxX-minX); 
-      fY = y + minY - 0.25*(maxY-minY);
-      wX = 1.5*(maxX-minX);
-      wY = 1.5*(maxY-minY);
+      fX = x + minX - 0.5*(maxX-minX); 
+      fY = y + minY - 0.5*(maxY-minY);
+      wX = 2   *(maxX-minX);
+      wY = 1.75*(maxY-minY);
 
       if      (maxExpression == "angry")     image(angrySVG,     fX, fY, wX, wY);
       else if (maxExpression == "disgusted") image(disgustedSVG, fX, fY, wX, wY);
