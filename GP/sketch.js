@@ -85,7 +85,6 @@ function setup() {
 
 
 
-
   // Create red threshold slider
   redThresholdSlider = createSlider(0, 255, 128);
   redThresholdSlider.position(10, 610);
@@ -99,10 +98,6 @@ function setup() {
   blueThresholdSlider.position(710, 610);
   blueThresholdSlider.input(updateBlueThreshold);
 
-
-
-
-
   yThresholdSlider = createSlider(0, 255, 128);
   yThresholdSlider.position(395, 1055);
   yThresholdSlider.input(updateyThreshold);
@@ -115,10 +110,6 @@ function setup() {
   crThresholdSlider.position(395, 1100);
   crThresholdSlider.input(updatecrThreshold); // <--- MUST IMPLEMENT CALLBACK NO EFFECT OTHERWISE ON CHANGE UNLESS 
                                               // <--- crThresholdSlider is called.
-
-
-
-
   hThresholdSlider = createSlider(0, 255, 128);
   hThresholdSlider.position(800, 1055);
   hThresholdSlider.input(updatehThreshold);
@@ -164,52 +155,26 @@ function setup() {
 
 
 updateRedThreshold();   // otherwuse gotta move it to get startup value 
- 
 updateGreenThreshold(); 
-  
 updateBlueThreshold();
-
-
 updateyThreshold();
-  
 updatecbThreshold();
-  
 updatecrThreshold();
-
-
-
 updatehThreshold();
-  
 updatesThreshold();
-  
 updatevThreshold();
-
-
-
-
-
 }
 
 
 
 function   updateRedThreshold()   {redThreshold = redThresholdSlider.value();}; // inline function
-
 function updateGreenThreshold() {greenThreshold = greenThresholdSlider.value();};
-
 function  updateBlueThreshold()  {blueThreshold = blueThresholdSlider.value();};
-
-
 function     updateyThreshold()     {yThreshold = yThresholdSlider.value();};
-
 function    updatecbThreshold()    {cbThreshold = cbThresholdSlider.value();};
-
 function    updatecrThreshold()    {crThreshold = crThresholdSlider.value();};
-
-
 function     updatehThreshold()     {hThreshold = hThresholdSlider.value();};
-
 function     updatesThreshold()     {sThreshold = sThresholdSlider.value();};
-
 function     updatevThreshold()     {vThreshold = vThresholdSlider.value();};
 
 
@@ -275,18 +240,19 @@ function draw() {
 
   }
   
-
     video.updatePixels();  
 
 
     image(video, 360, 10, gridWidth, gridHeight);
 
 
+ /////////////////// END GRAYSCALE FILTER ////////////////////// 
+
+
     for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];}
 
 
     video.updatePixels();
-
 
 
   ///////////// START EMOTION EMOJI EXTENSION ///////////////
@@ -315,17 +281,13 @@ function draw() {
 
 
 
-
 //////////////////////// END CMY FILTER ////////////////////////////////
-
 
 
 for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};
 
 
-
 //////////////////// START RED CHANNEL FILTER ///////////////////////////
-
 
 
   for (let i = 0; i < video.pixels.length; i += 4) {video.pixels[i + 1] = video.pixels[i + 2] = 0;};
@@ -358,12 +320,7 @@ image(video, 360, 220, gridWidth, gridHeight);
 ////////// END GREEN  CHANNEL FILTER //////////////////////
 
 
-
-for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];}
-
-
-video.updatePixels();
-
+for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};
 
 
 ////////// START BLUE  CHANNEL FILTER //////////////////////
