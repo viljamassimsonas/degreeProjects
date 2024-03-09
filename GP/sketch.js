@@ -174,30 +174,29 @@ function setup() {
   cond2.option(4);
 
 
-  updateRedThreshold()   // otherwuse gotta move it to get startup value 
-  
-  
-  
-  updateGreenThreshold() 
-  
-  
-  
- updateBlueThreshold() 
 
 
-updateyThreshold() 
+updateRedThreshold();   // otherwuse gotta move it to get startup value 
+ 
+updateGreenThreshold(); 
   
-updatecbThreshold()
+updateBlueThreshold();
+
+
+updateyThreshold();
   
-updatecrThreshold()
+updatecbThreshold();
+  
+updatecrThreshold();
 
 
 
-updatehThreshold() 
+updatehThreshold();
   
-updatesThreshold()
+updatesThreshold();
   
-updatevThreshold()
+updatevThreshold();
+
 
 }
 
@@ -219,9 +218,9 @@ function    updatecrThreshold()    {crThreshold = crThresholdSlider.value();};
 
 function     updatehThreshold()     {hThreshold = hThresholdSlider.value();};
 
-function    updatesThreshold()      {sThreshold = sThresholdSlider.value();};
+function     updatesThreshold()     {sThreshold = sThresholdSlider.value();};
 
-function    updatevThreshold()      {vThreshold = vThresholdSlider.value();};
+function     updatevThreshold()     {vThreshold = vThresholdSlider.value();};
 
 
 
@@ -301,70 +300,63 @@ if (detections.length > 0) {
 ///////////// END EMOTION EMOJI EXTENSION /////////////
 
 
-// Iterate through webcam pixels
-for (let i = 0; i < video.pixels.length; i += 4) {
-  // Extract RGB values from webcam source
-  let r = video.pixels[i];
-  
-  // Set pixels for each channel
-  video.pixels[i] = r;
-  video.pixels[i + 1] = 0; // Zero out G channel
-  video.pixels[i + 2] = 0; // Zero out B channel
 
-}
+////////// START RED CHANNEL FILTER //////////////////////
 
-  // Update webcam pixels
+
+  for (let i = 0; i < video.pixels.length; i += 4) {video.pixels[i + 1] = video.pixels[i + 2] = 0;};
+
   video.updatePixels();
 
   image(video, 10, 220, gridWidth, gridHeight);
 
 
-  for (let i = 0; i < restore.length; i++) {
-
-    video.pixels[i] = restore[i];
-    
-  }
+////////// END RED CHANNEL FILTER //////////////////////
 
 
-for (let i = 0; i < video.pixels.length; i += 4) {
-  // Extract RGB values from webcam source
-  let g = video.pixels[i + 1];
 
-  video.pixels[i] = 0; // Zero out R channel
-  video.pixels[i + 1] = g;
-  video.pixels[i + 2] = 0; // Zero out B channel
+for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};
 
-}
 
 video.updatePixels();
+
+
+
+////////// START GREEN  CHANNEL FILTER //////////////////////
+
+
+for (let i = 0; i < video.pixels.length; i += 4) {video.pixels[i] = video.pixels[i + 2] = 0;}; 
+
+
+video.updatePixels();
+
 
 image(video, 360, 220, gridWidth, gridHeight);
 
 
-
-for (let i = 0; i < restore.length; i++) {
-
-  video.pixels[i] = restore[i];
-  
-}
+////////// END GREEN  CHANNEL FILTER //////////////////////
 
 
-for (let i = 0; i < video.pixels.length; i += 4) {
-  // Extract RGB values from webcam source
-  let b = video.pixels[i + 2];
+for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];}
 
-  video.pixels[i] = 0; // Zero out R channel
-  video.pixels[i + 1] = 0; // Zero out G channel
-  video.pixels[i + 2] = b;
-}
 
-// Update pixels for each channel
 video.updatePixels();
+
+////////// START BLUE  CHANNEL FILTER //////////////////////
+
+
+
+for (let i = 0; i < video.pixels.length; i += 4) {video.pixels[i] = video.pixels[i + 1] = 0;};
+
+
+video.updatePixels();
+
 
 image(video, 710, 220, gridWidth, gridHeight);
 
 
 
+////////// END BLUE  CHANNEL FILTER //////////////////////
 
 
 
@@ -470,8 +462,6 @@ image(video, 360, 430, gridWidth, gridHeight);
 ///////////////////////////////////////////////////
 
 
-
-
 blueChannel = [];
 
 for (let i = 0; i < restore.length; i++) {
@@ -501,22 +491,27 @@ for (let i = 0; i < video.pixels.length; i += 4) {
 }
 
 
-
 for (let i = 0; i < blueChannel.length; i++) {video.pixels[i] = blueChannel[i];};
 
 
-// Update pixels for red channel
 video.updatePixels();
 
-// Display red channel
+
 image(video, 710, 430, gridWidth, gridHeight);
+
+
+
+///////////////////// END BLUE FILTER //////////////////////////////////
+
 
 
 for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};
 
 
-///////////////////////////////////////////////////////////////
 video.updatePixels();
+
+
+//////////////////////// START CMY FILTER ////////////////////////////////
 
 
 invert = []
@@ -607,9 +602,9 @@ for (let i = 0; i < video.pixels.length; i += 4) {
       let Cb = 128 - 0.168736 * video.pixels[i] - 0.331264 * video.pixels[i+1] + 0.5      * video.pixels[i+2];
       let Cr =      128 + 0.5 * video.pixels[i] - 0.418688 * video.pixels[i+1] - 0.081312 * video.pixels[i+2];
 
-      let tY = 150 * ( yThreshold/128);
-      let tB = 100 * (cbThreshold/128);
-      let tR = 150 * (crThreshold/128);
+      let tY = 150 * 1 //( yThreshold/128);
+      let tB = 100 * 1 //(cbThreshold/128);
+      let tR = 150 * 1 //(crThreshold/128);
     
       if (Y > tY && Cb > tB && Cr > tR) {
 
@@ -622,13 +617,17 @@ for (let i = 0; i < video.pixels.length; i += 4) {
         video.pixels[i]     =  Y; // Set back to original RGB values for non-segmented pixels
         video.pixels[i + 1] = Cb;
         video.pixels[i + 2] = Cr;
+
       }
 }};
 
 
+
 video.updatePixels();
 
+
 image(video, 360, 640, gridWidth, gridHeight);
+
 
 
 //////////////// END NO SLIDER YCBCR//////////////////
@@ -702,9 +701,14 @@ for (let i = 0; i < video.pixels.length; i += 4) {
 }
 }
 
+
+
 video.updatePixels();
 
+
 image(video, 360, 850, gridWidth, gridHeight);
+
+
 
 ///////////////////////// END SLIDER YCBCR /////////////////////////////
 
@@ -763,13 +767,14 @@ for (let i = 0; i <video.pixels.length; i += 4) {
          else                           H = 5 - R;
 
          //////////////////////////////////////////////////////
-         video.pixels[i]     = H *  60 * (hThreshold / 128);
-         video.pixels[i + 1] = S * 360 * (sThreshold / 128);
-         video.pixels[i + 2] =       V * (vThreshold / 128);
+         video.pixels[i]     = H *  60 * 1 //(hThreshold / 128);
+         video.pixels[i + 1] = S * 360 * 1 //(sThreshold / 128);
+         video.pixels[i + 2] =       V * 1 //(vThreshold / 128);
  }
      
 
  video.updatePixels();
+
 
  image(video, 710, 640, gridWidth, gridHeight);
 
@@ -818,7 +823,7 @@ for (let i = 0; i <video.pixels.length; i += 4) {
 
   //////////////////////////////////////////////////////////
   
-  if                    (S == 0) H =     0;
+  if                    (S == 0) H = 0;
   else if  (r == max & g == min) H = 5 + B;
   else if  (r == max & g != min) H = 1 - G;
   else if  (g == max & b == min) H = R + 1;
@@ -834,17 +839,15 @@ for (let i = 0; i <video.pixels.length; i += 4) {
 }
 
 
+
 video.updatePixels();
+
 
 image(video, 710, 850, gridWidth, gridHeight);
 
 
+
 //////////////////// END HSV FILTER SLIDER ////////////////////////////////
-
-
-
-
-
 
 
 
@@ -854,6 +857,8 @@ for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};
 video.updatePixels();
 
 
+
+/////////////////////// START FACE FILTERS //////////////////////////////////
 
 
 if (detections.length > 0) {
@@ -1063,18 +1068,17 @@ if(detections.length > 0) {
         }
   }
     
+
+
   video.updatePixels();
   
+
   if (cond2.value() != 0 && cond2.value() != 4) image(video, 10, 850, gridWidth, gridHeight);
  
+  
+
 /////////////////////// END FACE FILTERS //////////////////////////////////
-
 }
-
-
-
-
-
 
 
 
