@@ -78,10 +78,6 @@ function setup() {
   video.hide(); // Hide the video element
 
 
-  test1 = true;
-
-  test2 = true;
-
 
   const faceOptions = { withLandmarks: true, withExpressions: true, withDescriptors: true, minConfidence: 0.5 };
 
@@ -105,6 +101,8 @@ function setup() {
 
 
 
+
+
   yThresholdSlider = createSlider(0, 255, 128);
   yThresholdSlider.position(360, 1055);
   yThresholdSlider.input(updateyThreshold);
@@ -117,6 +115,8 @@ function setup() {
   crThresholdSlider.position(360, 1100);
   crThresholdSlider.input(updatecrThreshold); // <--- MUST IMPLEMENT CALLBACK NO EFFECT OTHERWISE ON CHANGE UNLESS 
                                               // <--- crThresholdSlider is called.
+
+
 
 
   hThresholdSlider = createSlider(0, 255, 128);
@@ -286,45 +286,131 @@ function draw() {
     grayscale.push(video.pixels[i+3])
 
     
-// TRIPLE == EXPLAIN 3 X =
 
   }
   
-  
-  video.updatePixels();  // Update webcam pixels
+
+    video.updatePixels();  
 
 
-  image(video, 360, 10, gridWidth, gridHeight);
+    image(video, 360, 10, gridWidth, gridHeight);
 
 
-  for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];}
+    for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];}
 
 
-
-///////////// START EMOTION EMOJI EXTENSION ///////////////
-
-for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];}
-
-
-video.updatePixels();
-
-
-image(video, 710, 10, gridWidth, gridHeight);
-
-
-if (detections.length > 0) {
-
-  faceOutline = detections[0].landmarks
-  
-  drawExpressions(detections, 710, 20, 14)
-
-}
-
-///////////// END EMOTION EMOJI EXTENSION /////////////
+    video.updatePixels();
 
 
 
-////////// START RED CHANNEL FILTER //////////////////////
+    ///////////// START EMOTION EMOJI EXTENSION ///////////////
+
+
+    if (cond.value() == 0) {
+
+
+    image(video, 710, 10, gridWidth, gridHeight);
+
+
+    if (detections.length > 0) {
+
+
+        faceOutline = detections[0].landmarks
+        
+        drawExpressions(detections, 710, 20, 14)
+
+    }} 
+
+    
+    ////////////////// END EMOTION EMOJI EXTENSION ///////////////////////
+    
+
+    //////////////////////// START CMY FILTER ////////////////////////////////
+
+
+    if (cond.value() != 0){
+
+
+        invert = []
+
+
+        for (let i = 0; i < video.pixels.length; i += 4) {
+
+          c = (video.pixels[i + 1] + video.pixels[i + 2]) / (255 - video.pixels[i])
+          m = (video.pixels[i]     + video.pixels[i + 2]) / (255 - video.pixels[i+1]) //
+          y = (video.pixels[i]     + video.pixels[i + 1]) / (255 - video.pixels[i+2]) // overflows 255--->0++
+
+          if (cond.value() == 1) {
+
+            let r = video.pixels[i] / 255;
+            let g = video.pixels[i + 1] / 255;
+            let b = video.pixels[i + 2] / 255;
+            
+            // Convert RGB to CMY
+            let c = 1 - r;
+            let m = 1 - g;
+            let y = 1 - b;
+            
+            // Scale values back to 0-255 range
+            c *= 255;
+            m *= 255;
+            y *= 255;
+            
+            // Update pixel values with CMY
+            video.pixels[i] = c;
+            video.pixels[i + 1] = m;
+            video.pixels[i + 2] = y;
+
+          } else if (cond.value() == 2) {
+
+            video.pixels[i]     = 255 * (1-c)
+            video.pixels[i + 1] = 255 * (1-m)
+            video.pixels[i + 2] = 255 * (1-y)
+
+          } else if (cond.value() == 3) {
+
+            video.pixels[i]     = video.pixels[i]     * 0.8
+            video.pixels[i + 1] = video.pixels[i + 1] * 0.6
+            video.pixels[i + 2] = video.pixels[i + 2] * 0.4
+
+          } else if (cond.value() == 4) {
+
+            video.pixels[i]     = c * 255
+            video.pixels[i + 1] = m * 255
+            video.pixels[i + 2] = y * 255
+
+          } else if (cond.value() == 5) {
+
+            video.pixels[i]     = 255 - video.pixels[i]
+            video.pixels[i + 1] = 255 - video.pixels[i + 1]
+            video.pixels[i + 2] = 255 - video.pixels[i + 2]
+
+          }
+
+          invert.push(video.pixels[i])
+          invert.push(video.pixels[i+1])
+          invert.push(video.pixels[i+2])
+          invert.push(video.pixels[i+3])
+     }
+
+
+     video.updatePixels();
+
+     image(video, 710, 10, gridWidth, gridHeight);
+  }
+
+
+
+//////////////////////// END CMY FILTER ////////////////////////////////
+
+
+
+for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};
+
+
+
+//////////////////// START RED CHANNEL FILTER ///////////////////////////
+
 
 
   for (let i = 0; i < video.pixels.length; i += 4) {video.pixels[i + 1] = video.pixels[i + 2] = 0;};
@@ -339,12 +425,7 @@ if (detections.length > 0) {
 ////////// END RED CHANNEL FILTER //////////////////////
 
 
-
 for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};
-
-
-video.updatePixels();
-
 
 
 ////////// START GREEN  CHANNEL FILTER //////////////////////
@@ -468,77 +549,7 @@ image(video, 710, 430, gridWidth, gridHeight);
 ///////////////////// END BLUE FILTER //////////////////////////////////
 
 
-
 for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};
-
-
-video.updatePixels();
-
-
-//////////////////////// START CMY FILTER ////////////////////////////////
-
-
-invert = []
-
-for (let i = 0; i < video.pixels.length; i += 4) {
-
-  c = (video.pixels[i + 1] + video.pixels[i + 2]) / (255 - video.pixels[i])
-  m = (video.pixels[i]     + video.pixels[i + 2]) / (255 - video.pixels[i+1]) //
-  y = (video.pixels[i]     + video.pixels[i + 1]) / (255 - video.pixels[i+2]) // overflows 255--->0++
-
-  if (cond.value() == 3) {
-  
-    video.pixels[i]     = c * 255
-    video.pixels[i + 1] = m * 255
-    video.pixels[i + 2] = y * 255
-
-  } else if (cond.value() == 1) {
-
-    video.pixels[i]     = 255 * (1-c)
-    video.pixels[i + 1] = 255 * (1-m)
-    video.pixels[i + 2] = 255 * (1-y)
-
-  } else if (cond.value() == 2) {
-
-    video.pixels[i]     = video.pixels[i]     * 0.8
-    video.pixels[i + 1] = video.pixels[i + 1] * 0.6
-    video.pixels[i + 2] = video.pixels[i + 2] * 0.4
-
-  } else if (cond.value() == 0) {
-
-    let r = video.pixels[i] / 255;
-    let g = video.pixels[i + 1] / 255;
-    let b = video.pixels[i + 2] / 255;
-    
-    // Convert RGB to CMY
-    let c = 1 - r;
-    let m = 1 - g;
-    let y = 1 - b;
-    
-    // Scale values back to 0-255 range
-    c *= 255;
-    m *= 255;
-    y *= 255;
-    
-    // Update pixel values with CMY
-    video.pixels[i] = c;
-    video.pixels[i + 1] = m;
-    video.pixels[i + 2] = y;
-
-  } else if (cond.value() == 4) {
-
-    video.pixels[i]     = 255 - video.pixels[i]
-    video.pixels[i + 1] = 255 - video.pixels[i + 1]
-    video.pixels[i + 2] = 255 - video.pixels[i + 2]
-
-  } else if (cond.value() == 5) {}
-
-    invert.push(video.pixels[i])
-    invert.push(video.pixels[i+1])
-    invert.push(video.pixels[i+2])
-    invert.push(video.pixels[i+3])
-
-}
 
 
 video.updatePixels();
@@ -730,7 +741,7 @@ for (let i = 0; i <video.pixels.length; i += 4) {
          else if  (r == max & g == min) H = 3 + G;
          else                           H = 5 - R;
 
-         //////////////////////////////////////////////////////
+         ///////////////////////////////////////////////////////
          video.pixels[i]     = H *  60 * 1 //(hThreshold / 128);
          video.pixels[i + 1] = S * 360 * 1 //(sThreshold / 128);
          video.pixels[i + 2] =       V * 1 //(vThreshold / 128);
@@ -785,8 +796,7 @@ for (let i = 0; i <video.pixels.length; i += 4) {
           B = ((max-b)/(max-min));
   if (!B) B = 0;
 
-  //////////////////////////////////////////////////////////
-  
+  /////////////////////////////////////////
   if                    (S == 0) H = 0;
   else if  (r == max & g == min) H = 5 + B;
   else if  (r == max & g != min) H = 1 - G;
@@ -796,7 +806,7 @@ for (let i = 0; i <video.pixels.length; i += 4) {
   else if  (r == max & g == min) H = 3 + G;
   else                           H = 5 - R;
 
-  //////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////
   video.pixels[i]     = H *  60 * (hThreshold / 128);
   video.pixels[i + 1] = S * 360 * (sThreshold / 128);
   video.pixels[i + 2] =       V * (vThreshold / 128);
@@ -1042,24 +1052,6 @@ if(detections.length > 0) {
   
 
 /////////////////////// END FACE FILTERS //////////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
