@@ -1,6 +1,6 @@
 let video;
 let snapshot;
-let gridWidth = 170*2;
+let gridWidth  = 170*2;
 let gridHeight = 100*2;
 let faceapi
 
@@ -13,8 +13,6 @@ let greenThreshold = 0;
 let blueThresholdSlider;
 let blueThreshold = 0;
 
-
-
 let yThresholdSlider;
 let yThreshold = 0;
 
@@ -24,8 +22,6 @@ let cbThreshold = 0;
 let crThresholdSlider;
 let crThreshold = 0;
 
-
-
 let hThresholdSlider;
 let hThreshold = 0;
 
@@ -34,9 +30,6 @@ let sThreshold = 0;
 
 let vThresholdSlider;
 let vThreshold = 0;
-
-invert = []
-
 
 
 let classifier;
@@ -56,7 +49,6 @@ let maxY = 0;
 
 function preload(){
 
-
   angrySVG     = loadImage("angry.svg");
   disgustedSVG = loadImage("disgusted.svg");
   fearfulSVG   = loadImage("fearful.svg");
@@ -65,11 +57,11 @@ function preload(){
   sadSVG       = loadImage("sad.svg");
   surprisedSVG = loadImage("surprised.svg");
 
-
 }
 
 
 function setup() {
+
   createCanvas(1100, 1500);
   
   // Initialize webcam
@@ -99,15 +91,15 @@ function setup() {
   blueThresholdSlider.input(updateBlueThreshold);
 
   yThresholdSlider = createSlider(0, 255, 128);
-  yThresholdSlider.position(395, 1055);
+  yThresholdSlider.position(450, 1055);
   yThresholdSlider.input(updateyThreshold);
 
   cbThresholdSlider = createSlider(0, 255, 128);
-  cbThresholdSlider.position(395, 1077.5);
+  cbThresholdSlider.position(450, 1077.5);
   cbThresholdSlider.input(updatecbThreshold);
 
   crThresholdSlider = createSlider(0, 255, 128);
-  crThresholdSlider.position(395, 1100);
+  crThresholdSlider.position(450, 1100);
   crThresholdSlider.input(updatecrThreshold); // <--- MUST IMPLEMENT CALLBACK NO EFFECT OTHERWISE ON CHANGE UNLESS 
                                               // <--- crThresholdSlider is called.
   hThresholdSlider = createSlider(0, 255, 128);
@@ -125,34 +117,22 @@ function setup() {
 
 
 
+  
 
+  ////////////////////////////
 
-
-  cond1 = createSelect(true);
-  cond1.position(600, 1055);
-
-
-  // Add color options.
-  cond1.option("YCbCr");
-  cond1.option("YCbCr2");
-  cond1.option("YCbCr3");
-
-  cond1.selected("YCbCr");
 
   cond2 = createSelect(true);
   cond2.position(100, 1060);
 
-  
-
-  // Add color options.
-  cond2.option("Face_Detection");  
   cond2.option("Grayscaled_Face");
   cond2.option("Blurred_Face");
   cond2.option("Colour_Converted_Face");
   cond2.option("Pixelated_Face");
 
-  cond2.selected("Face_Detection");
 
+
+  //////////////////////////////// 
 
 updateRedThreshold();   // otherwuse gotta move it to get startup value 
 updateGreenThreshold(); 
@@ -181,8 +161,6 @@ function     updatevThreshold()     {vThreshold = vThresholdSlider.value();};
 
 function draw() {
 
-
-
   background(255);
 
 
@@ -190,58 +168,38 @@ function draw() {
   noStroke();
   fill('black')
 
+
   text( '  Y',  yThresholdSlider.x +  yThresholdSlider.width,  yThresholdSlider.y +  yThresholdSlider.height);
   text('  Cb', cbThresholdSlider.x + cbThresholdSlider.width, cbThresholdSlider.y + cbThresholdSlider.height);
   text('  Cr', crThresholdSlider.x + crThresholdSlider.width, crThresholdSlider.y + crThresholdSlider.height);
-
-
-  text('  H', hThresholdSlider.x + hThresholdSlider.width, hThresholdSlider.y + hThresholdSlider.height);
-  text('  S', sThresholdSlider.x + sThresholdSlider.width, sThresholdSlider.y + sThresholdSlider.height);
-  text('  V', vThresholdSlider.x + vThresholdSlider.width, vThresholdSlider.y + vThresholdSlider.height);
-
-
-  text('  V', vThresholdSlider.x + vThresholdSlider.width, vThresholdSlider.y + vThresholdSlider.height);
+  text( '  H',  hThresholdSlider.x +  hThresholdSlider.width,  hThresholdSlider.y +  hThresholdSlider.height);
+  text( '  S',  sThresholdSlider.x +  sThresholdSlider.width,  sThresholdSlider.y +  sThresholdSlider.height);
+  text( '  V',  vThresholdSlider.x +  vThresholdSlider.width,  vThresholdSlider.y +  vThresholdSlider.height);  
   
-  
+ 
   video.loadPixels();  // Display webcam image
 
   image(video, 10, 10, gridWidth, gridHeight);
 
 
-  
   restore = []
 
   for (let i = 0; i < video.pixels.length; i++) {restore.push(video.pixels[i]);}
 
 
- 
+ /////////////////// START GRAYSCALE FILTER ////////////////////// 
 
-  grayscale = []
-
-  // Iterate through webcam pixels
   for (let i = 0; i < video.pixels.length; i += 4) {
 
-    let r = video.pixels[i];
-    let g = video.pixels[i + 1];
-    let b = video.pixels[i + 2];
+    let brightness = ((video.pixels[i] + video.pixels[i + 1] + video.pixels[i + 2]) / 3) * 1.2;
 
-    let brightness = (r + g + b) / 3;
-
-    brightness += 51; // Increase brightness by 20%
-    brightness = constrain(brightness, 0, 255); // Ensure brightness stays within 0-255 range
-    video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = brightness;
-
-    grayscale.push(video.pixels[i])
-    grayscale.push(video.pixels[i+1])
-    grayscale.push(video.pixels[i+2])
-    grayscale.push(video.pixels[i+3])
-
+    brightness = constrain(brightness, 0, 255); 
     
+    video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = brightness;
 
   }
   
     video.updatePixels();  
-
 
     image(video, 360, 10, gridWidth, gridHeight);
 
@@ -251,40 +209,24 @@ function draw() {
 
     for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];}
 
-
     video.updatePixels();
 
 
-  ///////////// START EMOTION EMOJI EXTENSION ///////////////
-
+/////////////////// START EMOTION EMOJI EXTENSION ///////////////
 
     image(video, 710, 10, gridWidth, gridHeight);
 
+    if (detections.length > 0) {drawExpressions(detections, 710, 20, 14)}
 
-    if (detections.length > 0) {
-
-
-        faceOutline = detections[0].landmarks
-        
-        drawExpressions(detections, 710, 20, 14)
-
-    }
-
-      fill('yellow');
-      stroke("red");
-      strokeWeight(1.75);
-
-      text('EXTENSION', 965, 205);
-
+    fill('yellow');
+    stroke("red");
+    strokeWeight(1.75);
+    text('EXTENSION', 965, 205);
 
 ////////////////// END EMOTION EMOJI EXTENSION ///////////////////////
 
 
-
-//////////////////////// END CMY FILTER ////////////////////////////////
-
-
-for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};
+  for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};
 
 
 //////////////////// START RED CHANNEL FILTER ///////////////////////////
@@ -294,7 +236,6 @@ for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};
 
 
   video.updatePixels();
-
 
   image(video, 10, 220, gridWidth, gridHeight);
 
@@ -313,7 +254,6 @@ for (let i = 0; i < video.pixels.length; i += 4) {video.pixels[i] = video.pixels
 
 video.updatePixels();
 
-
 image(video, 360, 220, gridWidth, gridHeight);
 
 
@@ -326,26 +266,22 @@ for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};
 ////////// START BLUE  CHANNEL FILTER //////////////////////
 
 
-
 for (let i = 0; i < video.pixels.length; i += 4) {video.pixels[i] = video.pixels[i + 1] = 0;};
 
 
 video.updatePixels();
 
-
 image(video, 710, 220, gridWidth, gridHeight);
-
 
 
 ////////// END BLUE  CHANNEL FILTER //////////////////////
 
 
-
-
 for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};
 
 
-  
+////////// START RED THRESHOLD FILTER //////////////////////
+
 for (let i = 0; i < video.pixels.length; i += 4) {
         
   if (video.pixels[i] >= redThreshold) 
@@ -355,21 +291,18 @@ for (let i = 0; i < video.pixels.length; i += 4) {
 
 }
   
-
   video.updatePixels();
   
-
   image(video, 10, 430, gridWidth, gridHeight);
 
 
-
-
-////////////////// GREEN THRESHOLD ///////////////////////
-
+///////////////// END RED THRESHOLD FILTER /////////////////////
 
 
 for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};
- 
+
+
+////////////////// START GREEN THRESHOLD ///////////////////////
 
 
 for (let i = 0; i < video.pixels.length; i += 4) {
@@ -384,18 +317,13 @@ for (let i = 0; i < video.pixels.length; i += 4) {
 
 video.updatePixels();
 
-
 image(video, 360, 430, gridWidth, gridHeight);
 
 
+////////////////// END GREEN THRESHOLD ///////////////////////
 
 
-///////////////////////////////////////////////////
-
-
-
-for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];}
-
+for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};
 
 
 ////////////////// START BLUE FILTER /////////////////////////////
@@ -413,9 +341,7 @@ for (let i = 0; i < video.pixels.length; i += 4) {
 
 video.updatePixels();
 
-
 image(video, 710, 430, gridWidth, gridHeight);
-
 
 
 ///////////////////// END BLUE FILTER //////////////////////////////////
@@ -425,7 +351,6 @@ for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};
 
 
 video.updatePixels();
-
 
 image(video, 10, 640, gridWidth, gridHeight);
 
@@ -437,13 +362,10 @@ for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};
 
 video.updatePixels();
 
-
 image(video, 360, 640, gridWidth, gridHeight);
 
 
 for (let i = 0; i < video.pixels.length; i += 4) {
-
-
 
       let Y  =          0.299 * video.pixels[i] + 0.587    * video.pixels[i+1] + 0.114    * video.pixels[i+2];
       let Cb = 128 - 0.168736 * video.pixels[i] - 0.331264 * video.pixels[i+1] + 0.5      * video.pixels[i+2];
@@ -493,7 +415,6 @@ video.updatePixels();
 
 for (let i = 0; i < video.pixels.length; i += 4) {
 
-  if (cond1.value() == "YCbCr")  {
 
     let Y  =          0.299 * video.pixels[i] + 0.587    * video.pixels[i+1] + 0.114    * video.pixels[i+2];
     let Cb = 128 - 0.168736 * video.pixels[i] - 0.331264 * video.pixels[i+1] + 0.5      * video.pixels[i+2];
@@ -515,39 +436,7 @@ for (let i = 0; i < video.pixels.length; i += 4) {
       video.pixels[i + 1] = Cb;
       video.pixels[i + 2] = Cr;
     }
-
-  } else if (cond1.value() == "YCbCr2")  {
-
-      X = 0.412 * video.pixels[i] + 0.358 * video.pixels[i+1] + 0.180 * video.pixels[i+2] + yThreshold
-      Y = 0.213 * video.pixels[i] - 0.715 * video.pixels[i+1] + 0.072 * video.pixels[i+2] + cbThreshold
-      Z = 0.019 * video.pixels[i] - 0.119 * video.pixels[i+1] + 0.950 * video.pixels[i+2] + crThreshold
-
-      if (X <  yThreshold)     video.pixels[i] =  3.241 * X - 1.537 * Y - 0.499 * Z 
-      else                     video.pixels[i] =  0
-      
-      if (Y < cbThreshold) video.pixels[i + 1] = -0.969 * X + 1.876 * Y + 0.042 * Z
-      else                 video.pixels[i + 1] =  0
-
-      if (Z < crThreshold) video.pixels[i + 2] =  0.056 * X - 0.204 * Y + 1.057 * Z 
-      else                 video.pixels[i + 2] =  0
-
-  } else if (cond1.value() == "YCbCr3") {
-
-      Y  =   0.2215 * video.pixels[i] + 0.7154 * video.pixels[i+1] + 0.0721 * video.pixels[i+2] + yThreshold
-      Cb =  -0.1145 * video.pixels[i] - 0.3855 * video.pixels[i+1] + 0.5000 * video.pixels[i+2] + cbThreshold
-      Cr =   0.5016 * video.pixels[i] - 0.4556 * video.pixels[i+1] + 0.0459 * video.pixels[i+2] + crThreshold
-    
-      if ( Y >=  yThreshold) video.pixels[i]     = Y + 0.0000 * Cb + 1.5701 * Cr 
-      else                   video.pixels[i]     = 255
-      
-      if (Cb >= cbThreshold) video.pixels[i + 1] = Y - 0.1870 * Cb - 0.4664 * Cr
-      else                   video.pixels[i + 1] = 0
-        
-      if (Cr >= crThreshold) video.pixels[i + 2] = Y - 1.8556 * Cb + 0.0000 * Cr 
-      else                   video.pixels[i + 2] = 0
 }
-}
-
 
 
 video.updatePixels();
@@ -685,12 +574,9 @@ for (let i = 0; i <video.pixels.length; i += 4) {
 }
 
 
-
 video.updatePixels();
 
-
 image(video, 710, 850, gridWidth, gridHeight);
-
 
 
 //////////////////// END HSV FILTER SLIDER ////////////////////////////////
@@ -768,7 +654,7 @@ if (detections.length > 0) {
 
   maxX = maxX+17.5
 
-
+        console.log(detections)
  
   }
 
@@ -780,7 +666,7 @@ if(detections.length > 0) {
 
       console.log(cond2.value())
 
-      if(cond2.value() == "Face_Detection") {
+      if(cond2.value() == 0) {
 
           image(video, 10, 850, gridWidth, gridHeight);
 
@@ -853,7 +739,7 @@ if(detections.length > 0) {
                   y_ *= 255;
                     
                   // Update pixel values with CMY
-                  video.pixels[i] = c;
+                  video.pixels[i]     = c;
                   video.pixels[i + 1] = m;
                   video.pixels[i + 2] = y_;
               }
@@ -933,19 +819,10 @@ if(detections.length > 0) {
   video.updatePixels();
   
 
-  if (cond2.value() != "Face_Detection" && cond2.value() != "Pixelated_Face") image(video, 10, 850, gridWidth, gridHeight);
+  if (cond2.value() != 0 && cond2.value() != "Pixelated_Face") image(video, 10, 850, gridWidth, gridHeight);
  
-  
 
 /////////////////////// END FACE FILTERS //////////////////////////////////
-
-
-
-
-
-
-
-
 
 
 }
@@ -953,11 +830,13 @@ if(detections.length > 0) {
 
 
 
-///////////////// HELPER FUNCTIONS ///////////////////////
+
+
+//////////////////////// HELPER FUNCTIONS ///////////////////////////////
 
 
 
-//////////////// DRAW EXPRESSIONS ////////////////////////
+//////////////////////// DRAW EXPRESSIONS ///////////////////////////////
 
 function drawExpressions(detections, x, y, ySpace){
 
