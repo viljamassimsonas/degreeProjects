@@ -35,7 +35,7 @@ let sThreshold = 0;
 let vThresholdSlider;
 let vThreshold = 0;
 
-
+invert = []
 
 
 
@@ -104,15 +104,15 @@ function setup() {
 
 
   yThresholdSlider = createSlider(0, 255, 128);
-  yThresholdSlider.position(360, 1055);
+  yThresholdSlider.position(395, 1055);
   yThresholdSlider.input(updateyThreshold);
 
   cbThresholdSlider = createSlider(0, 255, 128);
-  cbThresholdSlider.position(360, 1077.5);
+  cbThresholdSlider.position(395, 1077.5);
   cbThresholdSlider.input(updatecbThreshold);
 
   crThresholdSlider = createSlider(0, 255, 128);
-  crThresholdSlider.position(360, 1100);
+  crThresholdSlider.position(395, 1100);
   crThresholdSlider.input(updatecrThreshold); // <--- MUST IMPLEMENT CALLBACK NO EFFECT OTHERWISE ON CHANGE UNLESS 
                                               // <--- crThresholdSlider is called.
 
@@ -120,62 +120,47 @@ function setup() {
 
 
   hThresholdSlider = createSlider(0, 255, 128);
-  hThresholdSlider.position(710, 1055);
+  hThresholdSlider.position(800, 1055);
   hThresholdSlider.input(updatehThreshold);
 
   sThresholdSlider = createSlider(0, 255, 128);
-  sThresholdSlider.position(710, 1077.5);
+  sThresholdSlider.position(800, 1077.5);
   sThresholdSlider.input(updatesThreshold);
 
   vThresholdSlider = createSlider(0, 255, 128);
-  vThresholdSlider.position(710, 1100);
+  vThresholdSlider.position(800, 1100);
   vThresholdSlider.input(updatevThreshold); // <--- MUST IMPLEMENT CALLBACK NO EFFECT OTHERWISE ON CHANGE UNLESS 
                                               // <--- crThresholdSlider is called.
 
 
 
 
-  cond = createSelect(true);
-  cond.position(710, 140);
-
-  
-
-  // Add color options.
-  cond.option(0);
-  cond.option(1);
-  cond.option(2);
-  cond.option(3);
-  cond.option(4);
-  cond.option(5);
-
-
-
 
 
   cond1 = createSelect(true);
-  cond1.position(580, 1055);
+  cond1.position(600, 1055);
 
-  
 
   // Add color options.
-  cond1.option(0);
-  cond1.option(1);
-  cond1.option(2);
+  cond1.option("YCbCr");
+  cond1.option("YCbCr2");
+  cond1.option("YCbCr3");
 
+  cond1.selected("YCbCr");
 
   cond2 = createSelect(true);
-  cond2.position(150, 1060);
+  cond2.position(100, 1060);
 
   
 
   // Add color options.
-  cond2.option(0);
-  cond2.option(1);
-  cond2.option(2);
-  cond2.option(3);
-  cond2.option(4);
+  cond2.option("Face_Detection");  
+  cond2.option("Grayscaled_Face");
+  cond2.option("Blurred_Face");
+  cond2.option("Colour_Converted_Face");
+  cond2.option("Pixelated_Face");
 
-
+  cond2.selected("Face_Detection");
 
 
 updateRedThreshold();   // otherwuse gotta move it to get startup value 
@@ -231,15 +216,14 @@ function     updatevThreshold()     {vThreshold = vThresholdSlider.value();};
 
 function draw() {
 
+
+
   background(255);
 
 
-  stroke('black')
+  textSize(14);
+  noStroke();
   fill('black')
-  
-
-  textSize(20);
-  
 
   text( '  Y',  yThresholdSlider.x +  yThresholdSlider.width,  yThresholdSlider.y +  yThresholdSlider.height);
   text('  Cb', cbThresholdSlider.x + cbThresholdSlider.width, cbThresholdSlider.y + cbThresholdSlider.height);
@@ -251,6 +235,8 @@ function draw() {
   text('  V', vThresholdSlider.x + vThresholdSlider.width, vThresholdSlider.y + vThresholdSlider.height);
 
 
+  text('  V', vThresholdSlider.x + vThresholdSlider.width, vThresholdSlider.y + vThresholdSlider.height);
+  
   
   video.loadPixels();  // Display webcam image
 
@@ -303,10 +289,7 @@ function draw() {
 
 
 
-    ///////////// START EMOTION EMOJI EXTENSION ///////////////
-
-
-    if (cond.value() == 0) {
+  ///////////// START EMOTION EMOJI EXTENSION ///////////////
 
 
     image(video, 710, 10, gridWidth, gridHeight);
@@ -319,85 +302,17 @@ function draw() {
         
         drawExpressions(detections, 710, 20, 14)
 
-    }} 
+    }
 
-    
-    ////////////////// END EMOTION EMOJI EXTENSION ///////////////////////
-    
+      fill('yellow');
+      stroke("red");
+      strokeWeight(1.75);
 
-    //////////////////////// START CMY FILTER ////////////////////////////////
-
-
-    if (cond.value() != 0){
+      text('EXTENSION', 965, 205);
 
 
-        invert = []
+////////////////// END EMOTION EMOJI EXTENSION ///////////////////////
 
-
-        for (let i = 0; i < video.pixels.length; i += 4) {
-
-          c = (video.pixels[i + 1] + video.pixels[i + 2]) / (255 - video.pixels[i])
-          m = (video.pixels[i]     + video.pixels[i + 2]) / (255 - video.pixels[i+1]) //
-          y = (video.pixels[i]     + video.pixels[i + 1]) / (255 - video.pixels[i+2]) // overflows 255--->0++
-
-          if (cond.value() == 1) {
-
-            let r = video.pixels[i] / 255;
-            let g = video.pixels[i + 1] / 255;
-            let b = video.pixels[i + 2] / 255;
-            
-            // Convert RGB to CMY
-            let c = 1 - r;
-            let m = 1 - g;
-            let y = 1 - b;
-            
-            // Scale values back to 0-255 range
-            c *= 255;
-            m *= 255;
-            y *= 255;
-            
-            // Update pixel values with CMY
-            video.pixels[i] = c;
-            video.pixels[i + 1] = m;
-            video.pixels[i + 2] = y;
-
-          } else if (cond.value() == 2) {
-
-            video.pixels[i]     = 255 * (1-c)
-            video.pixels[i + 1] = 255 * (1-m)
-            video.pixels[i + 2] = 255 * (1-y)
-
-          } else if (cond.value() == 3) {
-
-            video.pixels[i]     = video.pixels[i]     * 0.8
-            video.pixels[i + 1] = video.pixels[i + 1] * 0.6
-            video.pixels[i + 2] = video.pixels[i + 2] * 0.4
-
-          } else if (cond.value() == 4) {
-
-            video.pixels[i]     = c * 255
-            video.pixels[i + 1] = m * 255
-            video.pixels[i + 2] = y * 255
-
-          } else if (cond.value() == 5) {
-
-            video.pixels[i]     = 255 - video.pixels[i]
-            video.pixels[i + 1] = 255 - video.pixels[i + 1]
-            video.pixels[i + 2] = 255 - video.pixels[i + 2]
-
-          }
-
-          invert.push(video.pixels[i])
-          invert.push(video.pixels[i+1])
-          invert.push(video.pixels[i+2])
-          invert.push(video.pixels[i+3])
-     }
-
-
-     video.updatePixels();
-
-     image(video, 710, 10, gridWidth, gridHeight);
-  }
 
 
 
@@ -571,7 +486,7 @@ image(video, 360, 640, gridWidth, gridHeight);
 
 for (let i = 0; i < video.pixels.length; i += 4) {
 
-    if (cond1.value() == 0)  {
+
 
       let Y  =          0.299 * video.pixels[i] + 0.587    * video.pixels[i+1] + 0.114    * video.pixels[i+2];
       let Cb = 128 - 0.168736 * video.pixels[i] - 0.331264 * video.pixels[i+1] + 0.5      * video.pixels[i+2];
@@ -594,7 +509,7 @@ for (let i = 0; i < video.pixels.length; i += 4) {
         video.pixels[i + 2] = Cr;
 
       }
-}};
+};
 
 
 
@@ -621,7 +536,7 @@ video.updatePixels();
 
 for (let i = 0; i < video.pixels.length; i += 4) {
 
-  if (cond1.value() == 0)  {
+  if (cond1.value() == "YCbCr")  {
 
     let Y  =          0.299 * video.pixels[i] + 0.587    * video.pixels[i+1] + 0.114    * video.pixels[i+2];
     let Cb = 128 - 0.168736 * video.pixels[i] - 0.331264 * video.pixels[i+1] + 0.5      * video.pixels[i+2];
@@ -644,7 +559,7 @@ for (let i = 0; i < video.pixels.length; i += 4) {
       video.pixels[i + 2] = Cr;
     }
 
-  } else if (cond1.value() == 1)  {
+  } else if (cond1.value() == "YCbCr2")  {
 
       X = 0.412 * video.pixels[i] + 0.358 * video.pixels[i+1] + 0.180 * video.pixels[i+2] + yThreshold
       Y = 0.213 * video.pixels[i] - 0.715 * video.pixels[i+1] + 0.072 * video.pixels[i+2] + cbThreshold
@@ -659,7 +574,7 @@ for (let i = 0; i < video.pixels.length; i += 4) {
       if (Z < crThreshold) video.pixels[i + 2] =  0.056 * X - 0.204 * Y + 1.057 * Z 
       else                 video.pixels[i + 2] =  0
 
-  } else if (cond1.value() == 2) {
+  } else if (cond1.value() == "YCbCr3") {
 
       Y  =   0.2215 * video.pixels[i] + 0.7154 * video.pixels[i+1] + 0.0721 * video.pixels[i+2] + yThreshold
       Cb =  -0.1145 * video.pixels[i] - 0.3855 * video.pixels[i+1] + 0.5000 * video.pixels[i+2] + cbThreshold
@@ -901,16 +816,14 @@ if (detections.length > 0) {
   }
 
 
- for (let i = 0; i < restore.length; i++) {
-
-    video.pixels[i] = restore[i];
-
-  }
+ for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};
 
 
 if(detections.length > 0) {
 
-      if(cond2.value() == 0) {
+      console.log(cond2.value())
+
+      if(cond2.value() == "Face_Detection") {
 
           image(video, 10, 850, gridWidth, gridHeight);
 
@@ -930,7 +843,7 @@ if(detections.length > 0) {
           }
       }
 
-      if(cond2.value() == 1) {
+      if(cond2.value() == "Grayscaled_Face") {
 
         for     (let x = 0; x < gridWidth;  x++) {
             for (let y = 0; y < gridHeight; y++) {
@@ -958,25 +871,41 @@ if(detections.length > 0) {
           }  
         } 
 
-        if(cond2.value() == 2) {
+        if(cond2.value() == "Colour_Converted_Face") {
 
           for (let x = 0; x < gridWidth; x++) {
       
             for (let y = 0; y < gridHeight; y++) {
         
               if ((x >= minX & x <=maxX) && (y >= minY & y <=maxY)) {
-        
-                video.pixels[((y*gridWidth+x)*4)]   = invert[((y*gridWidth+x)*4)] 
-                video.pixels[((y*gridWidth+x)*4)+1] = invert[((y*gridWidth+x)*4)+1] 
-                video.pixels[((y*gridWidth+x)*4)+2] = invert[((y*gridWidth+x)*4)+2] 
-                video.pixels[((y*gridWidth+x)*4)+3] = invert[((y*gridWidth+x)*4)+3] 
+
+                  let i = (y*gridWidth+x)*4
+
+                  let r = video.pixels[i] / 255;
+                  let g = video.pixels[i + 1] / 255;
+                  let b = video.pixels[i + 2] / 255;
+                    
+                  // Convert RGB to CMY
+                  let c  = 1 - r;
+                  let m  = 1 - g;
+                  let y_ = 1 - b;
+                    
+                  // Scale values back to 0-255 range
+                  c  *= 255;
+                  m  *= 255;
+                  y_ *= 255;
+                    
+                  // Update pixel values with CMY
+                  video.pixels[i] = c;
+                  video.pixels[i + 1] = m;
+                  video.pixels[i + 2] = y_;
               }
             }
           }  
         } 
 
 
-        if(cond2.value() == 3) {
+        if(cond2.value() == "Blurred_Face") {
 
           for   (let x = 0; x < gridWidth;  x++) {
             for (let y = 0; y < gridHeight; y++) {
@@ -1003,7 +932,7 @@ if(detections.length > 0) {
           }
         } 
 
-        if(cond2.value() == 4) {
+        if(cond2.value() == "Pixelated_Face") {
           image(video, 10, 850, gridWidth, gridHeight);
           // BLYAT
           blockSizeH = (maxY-minY)/5
@@ -1047,7 +976,7 @@ if(detections.length > 0) {
   video.updatePixels();
   
 
-  if (cond2.value() != 0 && cond2.value() != 4) image(video, 10, 850, gridWidth, gridHeight);
+  if (cond2.value() != "Face_Detection" && cond2.value() != "Pixelated_Face") image(video, 10, 850, gridWidth, gridHeight);
  
   
 
@@ -1073,14 +1002,14 @@ if(detections.length > 0) {
 
 //////////////// DRAW EXPRESSIONS ////////////////////////
 
-function drawExpressions(detections, x, y, textYSpace){
+function drawExpressions(detections, x, y, ySpace){
 
 
 //If at least 1 face is detected
   if(detections.length > 0){ 
           
    // assigns each var the value of each key in the dict
-      let {neutral, happy, angry, sad, disgusted, surprised, fearful} = detections[0].expressions; 
+      let {angry, disgusted, fearful, happy, neutral, sad, surprised} = detections[0].expressions; 
 
       maxExpression = Object.keys(detections[0].expressions).reduce((a,b)=>detections[0].expressions[a]>detections[0].expressions[b]?a:b);
 
@@ -1099,18 +1028,31 @@ function drawExpressions(detections, x, y, textYSpace){
       else if (maxExpression == "sad")       image(sadSVG,       fX, fY, wX, wY);
       else if (maxExpression == "surprised") image(surprisedSVG, fX, fY, wX, wY);
 
-      textFont('Helvetica Neue');
-      textSize(14);
-      noStroke();
-      fill(44, 169, 225);
+      x = x + 2
+      y = y + 2
 
-      text("neutral:       "  + nf(neutral   * 100, 2, 2) + "%", x, y);
-      text("happiness: "      + nf(happy     * 100, 2, 2) + "%", x, y + textYSpace);
-      text("anger:        "   + nf(angry     * 100, 2, 2) + "%", x, y + textYSpace * 2);
-      text("sad:            " + nf(sad       * 100, 2, 2) + "%", x, y + textYSpace * 3);
-      text("disgusted:  "     + nf(disgusted * 100, 2, 2) + "%", x, y + textYSpace * 4);
-      text("surprised:  "     + nf(surprised * 100, 2, 2) + "%", x, y + textYSpace * 5);
-      text("fear:           " + nf(fearful   * 100, 2, 2) + "%", x, y + textYSpace * 6);
+      function ifMaxExpression(expression) {maxExpression == expression ? fill("red") : fill("yellow")};
+
+      ifMaxExpression("angry");
+      text("angry:       "   + nf(angry     * 100, 2, 2) + "%", x, y);
+
+      ifMaxExpression("disgusted");
+      text("disgust:     "   + nf(disgusted * 100, 2, 2) + "%", x, y + ySpace);
+
+      ifMaxExpression("fearful");
+      text("fear:          " + nf(fearful   * 100, 2, 2) + "%", x, y + ySpace * 2);
+
+      ifMaxExpression("happy");
+      text("happy:      "    + nf(happy     * 100, 2, 2) + "%", x, y + ySpace * 3);
+
+      ifMaxExpression("neutral");
+      text("neutral:     "   + nf(neutral   * 100, 2, 2) + "%", x, y + ySpace * 4);
+
+      ifMaxExpression("sad");
+      text("sad:          "  + nf(sad       * 100, 2, 2) + "%", x, y + ySpace * 5);
+
+      ifMaxExpression("surprised");
+      text("surprised: "     + nf(surprised * 100, 2, 2) + "%", x, y + ySpace * 6);
   }
 }
 
