@@ -63,7 +63,7 @@ function preload(){
 
 function setup() {
 
-  createCanvas(1100, 1500);
+  createCanvas(1060, 1145);
   
   // Initialize webcam
   video = createCapture(VIDEO);
