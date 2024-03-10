@@ -41,7 +41,7 @@ preload = () =>
   neutralSVG   = loadImage(  "neutral.svg");
   sadSVG       = loadImage(      "sad.svg");
   surprisedSVG = loadImage("surprised.svg");
-}
+};
 
 setup = () =>
 {
@@ -65,31 +65,31 @@ setup = () =>
     faceFilter.option("Colour_Converted_Face");
     faceFilter.option("Pixelated_Face");
 
-    tookCapture  = false
-    captureAgain = false
+    tookCapture  = false;
+    captureAgain = false;
 
     captureButton = createButton('TAKE CAPTURE');
     captureButton.position(233,190);
     captureButton.mousePressed(() => 
     {
-        tookCapture = true
+        tookCapture = true;
 
-        capture = video.get()
-        capture.loadPixels()
+        capture= video.get();
+        capture.loadPixels();
 
-        restore = [];
+        restore = []; 
         for (let i = 0; i < capture.pixels.length; i++) restore.push(capture.pixels[i]);
     });
 
-    redThresholdSlider   = createSlider(0, 255, 128);
-    greenThresholdSlider = createSlider(0, 255, 128);
-    blueThresholdSlider  = createSlider(0, 255, 128);
-    yThresholdSlider     = createSlider(0, 255, 128);
-    cbThresholdSlider    = createSlider(0, 255, 128);
-    crThresholdSlider    = createSlider(0, 255, 128);
-    hThresholdSlider     = createSlider(0, 255, 128);
-    sThresholdSlider     = createSlider(0, 255, 128);
-    vThresholdSlider     = createSlider(0, 255, 128);
+  redThresholdSlider = createSlider(0, 255, 128);
+greenThresholdSlider = createSlider(0, 255, 128);
+ blueThresholdSlider = createSlider(0, 255, 128);
+    yThresholdSlider = createSlider(0, 255, 128);
+   cbThresholdSlider = createSlider(0, 255, 128);
+   crThresholdSlider = createSlider(0, 255, 128);
+    hThresholdSlider = createSlider(0, 255, 128);
+    sThresholdSlider = createSlider(0, 255, 128);
+    vThresholdSlider = createSlider(0, 255, 128);
 
   redThresholdSlider.input(redThresholdUpdate); 
 greenThresholdSlider.input(greenThresholdUpdate);
@@ -143,10 +143,11 @@ draw = () =>
 
     if (tookCapture == false) { 
 
-        capture = video.get();
-        capture.loadPixels()
+        capture= video.get();
+        capture.loadPixels();
 
         for (let i = 0; i < capture.pixels.length; i += 4) 
+        
             capture.pixels[i] = capture.pixels[i + 1] = capture.pixels[i + 2] = 0;
 
         restore = [];
