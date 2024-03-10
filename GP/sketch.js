@@ -147,7 +147,7 @@ draw = () =>
         capture.loadPixels();
 
         for (let i = 0; i < capture.pixels.length; i += 4) 
-        
+
             capture.pixels[i] = capture.pixels[i + 1] = capture.pixels[i + 2] = 0;
 
         restore = [];
@@ -175,7 +175,6 @@ draw = () =>
 };
 
 
-
   redThresholdUpdate = () =>   {redThreshold =   redThresholdSlider.value();}; 
 greenThresholdUpdate = () => {greenThreshold = greenThresholdSlider.value();};
  blueThresholdUpdate = () =>  {blueThreshold =  blueThresholdSlider.value();};
@@ -185,7 +184,6 @@ greenThresholdUpdate = () => {greenThreshold = greenThresholdSlider.value();};
     hThresholdUpdate = () =>     {hThreshold =     hThresholdSlider.value();};
     sThresholdUpdate = () =>     {sThreshold =     sThresholdSlider.value();};
     vThresholdUpdate = () =>     {vThreshold =     vThresholdSlider.value();};
-
 
 
 //////////////////////// HELPER FUNCTIONS ///////////////////////////////
@@ -224,9 +222,9 @@ runFilter = (x,y, callback) =>
       
 
 //
-rgbSegmentation = (i, colour, threshold) => 
+rgbSegmentation = (i, rgbIndex, threshold) => 
 {
-    if  (capture.pixels[i + colour] >= threshold)   
+    if  (capture.pixels[i + rgbIndex] >= threshold)   
          capture.pixels[i] = capture.pixels[i + 1] = capture.pixels[i + 2] = 255;
     else capture.pixels[i] = capture.pixels[i + 1] = capture.pixels[i + 2] = 0;
 }
@@ -277,35 +275,26 @@ faceBox = (x,y) =>
       if (detections.length > 0) 
       {
           noFill();
-          strokeWeight(1);
           stroke("red");
+          strokeWeight(1);
           rect(minX+10, minY+850, maxX-minX, maxY-minY);
 };};};
 
 
 grayscale20 = (i) =>
 {
-  brightness = ((capture.pixels[i] + capture.pixels[i + 1] + capture.pixels[i + 2]) / 3) * 1.2;
-  brightness = constrain(brightness, 0, 255); 
-  
+  brightness= constrain(((capture.pixels[i] + capture.pixels[i + 1] + capture.pixels[i + 2])/ 3)* 1.2, 0, 255);  
   capture.pixels[i] = capture.pixels[i + 1] = capture.pixels[i + 2] = brightness;
 };
 
 
 grayscale = (x,y) => 
 {
-  let i = ((y*gridWidth+x)*4);
-
-  let r = video.pixels[i];
-  let g = video.pixels[i + 1];
-  let b = video.pixels[i + 2];
-
-  let brightness = (r + g + b) / 3;
-  brightness += 51;                           // Increase brightness by 20%
-  brightness = constrain(brightness, 0, 255); // Ensure brightness stays within 0-255 range
+  let          i = ((y * gridWidth + x) * 4);
+  let brightness = ((video.pixels[i] + video.pixels[i + 1] + video.pixels[i + 2]) / 3);
   
-  if      (brightness > 150) video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 255;
-  else if (brightness < 125) video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 0;
+  if      (brightness > 100) video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 255;
+  else if (brightness <  75) video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 0;
   else                       video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = brightness;
 };
 
@@ -376,61 +365,46 @@ hsv = (i, hasThreshold, source) =>
 blurred = (x,y) => 
 {
     let sum = [0, 0, 0];
-      for (let dx = -4; dx <= 4; dx++) {    // <----- KERNEL CHANGE 3x3 = -1 & -1
+    for (let dx = -4; dx <= 4; dx++) {    // <----- KERNEL CHANGE 3x3 = -1 & -1
         for (let dy = -4; dy <= 4; dy++) {  // <----- KERNEL CHANGE 5x5 = -2 & -2
                     
-          let index = 4 * ((y + dy) * gridWidth + (x + dx));
-          
-          for (let i = 0; i < 3; i++) {
-            sum[i] += video.pixels[index + i];
-      };};};
-
-    let pixelIndex = 4 * (y * video.width + x);
-    for (let i = 0; i < 3; i++) {
-            video.pixels[pixelIndex + i] = sum[i] / (3*3*3*3); // <--- CORRECT THE FORMULA
+            let index = ((y + dy) * gridWidth + (x + dx)) * 4;
+            for (let i = 0; i < 3; i++) sum[i] += video.pixels[index + i];
+    };};
+    let pixelIndex = (y * video.width + x) * 4;
+    for (let i = 0; i < 3; i++) { video.pixels[pixelIndex + i] = sum[i] / (3*3*3*3); // <--- CORRECT THE FORMULA
 };};
-
 
 
 pixelate = () => 
 {
-  image(video, 10, 850, gridWidth, gridHeight);
+    image(video, 10, 850, gridWidth, gridHeight);
 
-          blockSizeH = (maxY-minY)/5
-          blockSizeW = (maxX-minX)/5
+    blockSizeH = (maxY-minY) / 5
+    blockSizeW = (maxX-minX) / 5
+ 
+    pixelatedLayer = createImage(gridWidth, gridHeight);
+    pixelatedLayer.loadPixels();
 
-          daW = Math.floor(maxX-minX)
-          daH = Math.floor(maxY-minY) 
-          
-          bro = createImage(gridWidth,gridHeight);
-          bro.loadPixels();
-
-          for  (offsetY = 0; offsetY < 5; offsetY++){
-            for(offsetX = 0; offsetX < 5; offsetX++){
-                    // Paint each block with the average pixel intensity
-                    for   (let y = Math.floor(0 + blockSizeH * offsetY + minY); y < blockSizeH * (offsetY + 1) + minY; y++) {                            
-                      average = 0
-                      sum = 0
-                      count = 0           
-                      for (let x = Math.floor(0 + blockSizeW * offsetX + minX); x < blockSizeW * (offsetX + 1) + minX; x++) {                     
-                        pixelColor = get(x+10, y+850);
-                        r = red(pixelColor)
-                        g = blue(pixelColor)
-                        b = blue(pixelColor)
-                        sum += (r + g + b) / 3
-                        count++
-                      }}   
-                        average = sum / count;
-                                // Paint each block with the average pixel intensity
-                          for   (let y = Math.floor(0 + blockSizeH * offsetY + minY); y < (blockSizeH * (offsetY+1)) + minY; y++) {
-                            for (let x = Math.floor(0 + blockSizeW * offsetX + minX); x < (blockSizeW * (offsetX+1)) + minX; x++) {                    
-                              broIndex = ((y*gridWidth+x)*4)          
-                              bro.set(x,y,average)            
-                        }}  
-                      }                     
-                    }
-                  bro.updatePixels();
-                  image(bro, 10, 850, gridWidth, gridHeight);
+    for (offsetY = 0; offsetY < 5; offsetY++) { for (offsetX = 0; offsetX < 5; offsetX++) {
+        average = sum = count = 0;
+        // Paint each block with the average pixel intensity
+        for (    let y = Math.floor(0 + blockSizeH * offsetY + minY); y < blockSizeH * (offsetY + 1) + minY; y++) { 
+            for (let x = Math.floor(0 + blockSizeW * offsetX + minX); x < blockSizeW * (offsetX + 1) + minX; x++) {                     
+                      
+                pixelColor = get(x + 10, y + 850);
+                sum += (red(pixelColor) + blue(pixelColor) + blue(pixelColor)) / 3;
+                count++;
+        };};
+        average = sum / count;
+        // Paint each block with the average pixel intensity
+        for (    let y = Math.floor(0 + blockSizeH * offsetY + minY); y < (blockSizeH * (offsetY+1)) + minY; y++) {
+            for (let x = Math.floor(0 + blockSizeW * offsetX + minX); x < (blockSizeW * (offsetX+1)) + minX; x++) {                    
+                pixelatedLayerIndex = ((y * gridWidth+x) * 4);      
+                pixelatedLayer.set(x, y, average);           
+    };};};};
+    pixelatedLayer.updatePixels();
+    image(pixelatedLayer, 10, 850, gridWidth, gridHeight);
 }
 
 
@@ -453,10 +427,11 @@ extension = (detections, x, y, ySpace) =>
 
       x  = x + 2
       y  = y + 2
-      fX = -0.5 * (maxX-minX) + x + minX; 
-      fY = -0.5 * (maxY-minY) + y + minY;
-      wX = 2    * (maxX-minX);
-      wY = 1.75 * (maxY-minY);
+      
+      let fX = -0.5  * (maxX-minX) + x + minX; 
+      let fY = -0.5  * (maxY-minY) + y + minY;
+      let wX =  2    * (maxX-minX);
+      let wY =  1.75 * (maxY-minY);
 
       if      (maxExpression == "angry")     image(angrySVG,     fX, fY, wX, wY);
       else if (maxExpression == "disgusted") image(disgustedSVG, fX, fY, wX, wY);
