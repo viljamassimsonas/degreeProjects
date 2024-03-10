@@ -2,10 +2,11 @@ let gridWidth  = 340;
 let gridHeight = 200;
 let video;
 let capture;
+let restore;
 
 let faceapi;
 let detections = 0;
-let points = null;
+let points = 0;
 let minX = 0; 
 let minY = 0;
 let maxX = 0;
@@ -126,10 +127,9 @@ draw = () =>
 {
     background(255);
 
+    textSize(14);
     noStroke();
     fill('black');
-
-    textSize(14);
 
     text( '  Y',  yThresholdSlider.x +  yThresholdSlider.width,  yThresholdSlider.y +  yThresholdSlider.height);
     text('  Cb', cbThresholdSlider.x + cbThresholdSlider.width, cbThresholdSlider.y + cbThresholdSlider.height);
@@ -138,21 +138,19 @@ draw = () =>
     text( '  S',  sThresholdSlider.x +  sThresholdSlider.width,  sThresholdSlider.y +  sThresholdSlider.height);
     text( '  V',  vThresholdSlider.x +  vThresholdSlider.width,  vThresholdSlider.y +  vThresholdSlider.height);  
     
-
     video.loadPixels();
     image(video, 10,  10, gridWidth, gridHeight);
 
-    
     if (tookCapture == false) { 
 
-      capture = video.get();
-      capture.loadPixels()
+        capture = video.get();
+        capture.loadPixels()
 
-      for (let i = 0; i < capture.pixels.length; i += 4) 
-          capture.pixels[i] = capture.pixels[i + 1] = capture.pixels[i + 2] = 0;
+        for (let i = 0; i < capture.pixels.length; i += 4) 
+            capture.pixels[i] = capture.pixels[i + 1] = capture.pixels[i + 2] = 0;
 
-      restore = [];
-      for (let i = 0; i < capture.pixels.length; i++) restore.push(capture.pixels[i]);
+        restore = [];
+        for (let i = 0; i < capture.pixels.length; i++) restore.push(capture.pixels[i]);
     
     } else restoreVideo();
 
@@ -191,48 +189,49 @@ greenThresholdUpdate = () => {greenThreshold = greenThresholdSlider.value();};
 
 //////////////////////// HELPER FUNCTIONS ///////////////////////////////
 
+
 /////// ML5 FACE API //////////////
-
 gotFaces = (err, res) => {detections = res; faceapi.detect(gotFaces);}
-
-restoreVideo = () => {for (let i = 0; i < restore.length; i++) {capture.pixels[i] = restore[i];};};
-
 
 
 // runs functions within the bounds provided
 boundsHelper = (callback) => 
 {
-  for (let x = 0; x < gridWidth; x++) {for (let y = 0; y < gridHeight; y++) {
+    for (let x = 0; x < gridWidth; x++) {for (let y = 0; y < gridHeight; y++) {
 
-      if ((x >= minX & x <= maxX) && (y >= minY & y <= maxY)) {callback(x,y)};};};};  
+        if ((x >= minX & x <= maxX) && (y >= minY & y <= maxY)) callback(x,y);
+};};};  
 
 
+//
+restoreVideo = () => 
+{
+    for (let i = 0; i < restore.length; i++) capture.pixels[i] = restore[i];
+};
 
 
+//
 runFilter = (x,y, callback) => 
 {
-  for (let i = 0; i < capture.pixels.length; i += 4) callback(i);
+    for (let i = 0; i < capture.pixels.length; i += 4) callback(i);
+      
+    capture.updatePixels();  
+    image(capture, x, y, gridWidth, gridHeight);
     
-  capture.updatePixels();  
-  image(capture, x, y, gridWidth, gridHeight);
-  
-  restoreVideo()
+    restoreVideo();
 }
       
 
-  
-
-//////////////////////// DRAW EXPRESSIONS ///////////////////////////////
-
-
+//
 rgbSegmentation = (i, colour, threshold) => 
 {
-  if  (capture.pixels[i + colour] >= threshold)   
-       capture.pixels[i]  = capture.pixels[i + 1] = capture.pixels[i + 2] = 255;
-  else capture.pixels[i]  = capture.pixels[i + 1] = capture.pixels[i + 2] = 0;
+    if  (capture.pixels[i + colour] >= threshold)   
+         capture.pixels[i] = capture.pixels[i + 1] = capture.pixels[i + 2] = 255;
+    else capture.pixels[i] = capture.pixels[i + 1] = capture.pixels[i + 2] = 0;
 }
 
 
+//
 runFaceFilter = () => 
 {
   if (detections.length > 0) 
@@ -243,9 +242,8 @@ runFaceFilter = () =>
         bounds = detections[0].detection._box;
 
         minX = bounds._x - 5;
-        maxX = bounds._x + bounds._width  + 5;
-
         minY = bounds._y - 5;
+        maxX = bounds._x + bounds._width  + 5;
         maxY = bounds._y + bounds._height + 5;
 
         if (faceFilter.value() ==                       0) faceBox();
@@ -264,13 +262,14 @@ runFaceFilter = () =>
   }
 
 
+
 faceBox = (x,y) => 
 {
   image(video, 10, 850, gridWidth, gridHeight);
 
-  for (let i = 0; i < points.length; i++) // BLYATLOAD OF POINTS 
+  for (let i = 0; i < points.length; i++) 
   {     
-      stroke(161, 95, 251);                     // MAKE FACE SHAPE
+      stroke(161, 95, 251);                     
       strokeWeight(4);
       point(points[i]._x + 10, points[i]._y + 850);
 
@@ -335,26 +334,20 @@ ycbcr = (i, hasThreshold) =>
 
 
 
-function hsv(i, hasThreshold, source) {
-
+hsv = (i, hasThreshold, source) =>
+{
   let r = source.pixels[i];
   let g = source.pixels[i + 1];
   let b = source.pixels[i + 2];
-
   //////////////////////////////////////////////////////
-
   max = Math.max(r, g, b)
   min = Math.min(r, g, b)
-
   /////////////////////////////////////////////////////
-
           S = (max - min) / max;
   if (!S) S = 0;
 
   V = max;
-
   //////////////////////////////////////////////////////
-  
           R = ((max-r)/(max-min));
   if (!R) R = 0;
 
@@ -363,9 +356,7 @@ function hsv(i, hasThreshold, source) {
 
           B = ((max-b)/(max-min));
   if (!B) B = 0;
-
   //////////////////////////////////////////////////////////
-  
   if                  (S ==   0) H =     0;
   else if  (r == max & g == min) H = 5 + B;
   else if  (r == max & g != min) H = 1 - G;
@@ -374,16 +365,15 @@ function hsv(i, hasThreshold, source) {
   else if             (r == max) H = 3 - B;
   else if  (r == max & g == min) H = 3 + G;
   else                           H = 5 - R;
-
   ///////////////////////////////////////////////////////
-  source.pixels[i]     = hasThreshold ? H *  60 * (hThreshold / 128) : H *  60
-  source.pixels[i + 1] = hasThreshold ? S * 360 * (sThreshold / 128) : S * 360 
-  source.pixels[i + 2] = hasThreshold ?       V * (vThreshold / 128) : V
+  source.pixels[i]     = hasThreshold ? H *  60 * (hThreshold / 128) : H *  60;
+  source.pixels[i + 1] = hasThreshold ? S * 360 * (sThreshold / 128) : S * 360;
+  source.pixels[i + 2] = hasThreshold ?       V * (vThreshold / 128) : V;
 };
 
 
- function blurred(x,y) {
-
+blurred = (x,y) => 
+{
     let sum = [0, 0, 0];
       for (let dx = -4; dx <= 4; dx++) {    // <----- KERNEL CHANGE 3x3 = -1 & -1
         for (let dy = -4; dy <= 4; dy++) {  // <----- KERNEL CHANGE 5x5 = -2 & -2
@@ -392,9 +382,8 @@ function hsv(i, hasThreshold, source) {
           
           for (let i = 0; i < 3; i++) {
             sum[i] += video.pixels[index + i];
-          }
-        }
-      }
+      };};};
+
     let pixelIndex = 4 * (y * video.width + x);
     for (let i = 0; i < 3; i++) {
             video.pixels[pixelIndex + i] = sum[i] / (3*3*3*3); // <--- CORRECT THE FORMULA
@@ -402,8 +391,8 @@ function hsv(i, hasThreshold, source) {
 
 
 
-function pixelate() {
-
+pixelate = () => 
+{
   image(video, 10, 850, gridWidth, gridHeight);
 
           blockSizeH = (maxY-minY)/5
@@ -441,15 +430,11 @@ function pixelate() {
                     }
                   bro.updatePixels();
                   image(bro, 10, 850, gridWidth, gridHeight);
-
-
 }
 
 
-
-
-function extension(detections, x, y, ySpace){
-
+extension = (detections, x, y, ySpace) =>
+{
   image(video, 710, 10, gridWidth, gridHeight);
 
   fill('yellow');
@@ -497,10 +482,3 @@ function extension(detections, x, y, ySpace){
       ifMaxExpression("surprised");
       text("surprised: "     + nf(surprised * 100, 2, 2) + "%", x, y + ySpace * 6);
 };};
-
-
-
-
-
-
-
