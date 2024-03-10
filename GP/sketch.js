@@ -1,3 +1,12 @@
+/*
+
+
+    COMMENTARY
+
+
+
+*/
+
 let gridWidth  = 340;
 let gridHeight = 200;
 let video;
