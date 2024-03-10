@@ -160,7 +160,6 @@ captureButton.mousePressed(() => {
   
   tookCapture = true
 
-  capture = 0
   capture = video.get()
   capture.loadPixels()
 
@@ -216,6 +215,9 @@ function draw() {
 
   capture.updatePixels()
   image(capture, 10, 640, gridWidth, gridHeight);
+  
+  drawExpressions(detections, 710, 20, 14);
+  runFaceFilter();
 
   runFilter(360, 10, (i) => {grayscale20(i);});
 
@@ -230,13 +232,9 @@ function draw() {
   runFilter(360,640, (i) => {ycbcr(i, false);});
   runFilter(360,850, (i) => {ycbcr(i,  true);});
 
-  runFilter(710,640, (i) => {hsv(i, false);});
-  runFilter(710,850, (i) => {hsv(i,  true);});
+  runFilter(710,640, (i) => {hsv(i, false, capture);});
+  runFilter(710,850, (i) => {hsv(i,  true, capture);});
 
-
-  runFaceFilter();
-
-  drawExpressions(detections, 710, 20, 14);
 };
 
 
@@ -304,9 +302,9 @@ runFaceFilter = () => {
 
         if (faceFilter.value() ==       "Grayscaled_Face") boundsHelper((x,y) => {grayscale(x,y);});
 
-        if (faceFilter.value() == "Colour_Converted_Face") boundsHelper((x,y) => {cmy(x,y);      });
+        if (faceFilter.value() == "Colour_Converted_Face") boundsHelper((x,y) => {hsv((y * gridWidth + x) * 4, false, video);});
               
-        if (faceFilter.value() ==          "Blurred_Face") boundsHelper((x,y) => {blurred(x,y);  });
+        if (faceFilter.value() ==          "Blurred_Face") boundsHelper((x,y) => {  blurred(x,y);});
             
         if (faceFilter.value() ==        "Pixelated_Face") pixelate();
             
@@ -403,11 +401,11 @@ function ycbcr(i, hasThreshold){
 
 
 
-function hsv(i, hasThreshold) {
+function hsv(i, hasThreshold, source) {
 
-  let r = capture.pixels[i];
-  let g = capture.pixels[i + 1];
-  let b = capture.pixels[i + 2];
+  let r = source.pixels[i];
+  let g = source.pixels[i + 1];
+  let b = source.pixels[i + 2];
 
   //////////////////////////////////////////////////////
 
@@ -445,34 +443,9 @@ function hsv(i, hasThreshold) {
   else                           H = 5 - R;
 
   ///////////////////////////////////////////////////////
-  capture.pixels[i]     = hasThreshold ? H *  60 * (hThreshold / 128) : H *  60
-  capture.pixels[i + 1] = hasThreshold ? S * 360 * (sThreshold / 128) : S * 360 
-  capture.pixels[i + 2] = hasThreshold ?       V * (vThreshold / 128) : V
-}
-
-
-function cmy(x,y) {
-
-  let i = (y*gridWidth+x)*4
-
-  let r = video.pixels[i] / 255;
-  let g = video.pixels[i + 1] / 255;
-  let b = video.pixels[i + 2] / 255;
-    
-  // Convert RGB to CMY
-  let c  = 1 - r;
-  let m  = 1 - g;
-  let y_ = 1 - b;
-    
-  // Scale values back to 0-255 range
-  c  *= 255;
-  m  *= 255;
-  y_ *= 255;
-    
-  // Update pixel values with CMY
-  video.pixels[i]     = c;
-  video.pixels[i + 1] = m;
-  video.pixels[i + 2] = y_;
+  source.pixels[i]     = hasThreshold ? H *  60 * (hThreshold / 128) : H *  60
+  source.pixels[i + 1] = hasThreshold ? S * 360 * (sThreshold / 128) : S * 360 
+  source.pixels[i + 2] = hasThreshold ?       V * (vThreshold / 128) : V
 }
 
 
