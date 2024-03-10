@@ -31,6 +31,7 @@ let sThreshold = 0;
 let vThresholdSlider;
 let vThreshold = 0;
 
+let capture;
 
 let classifier;
 
@@ -68,6 +69,8 @@ function setup() {
   video = createCapture(VIDEO);
   video.size(gridWidth, gridHeight);
   video.hide(); // Hide the video element
+
+  
 
 
 
@@ -143,7 +146,27 @@ updatecrThreshold();
 updatehThreshold();
 updatesThreshold();
 updatevThreshold();
-}
+
+
+tookCapture  = false
+captureAgain = false
+
+
+captureButton = createButton('TAKE CAPTURE');
+
+captureButton.position(233,190);
+
+captureButton.mousePressed(() => {
+  
+  tookCapture = true
+
+  capture = 0
+  capture = video.get()
+  capture.loadPixels()
+
+  restore = [];
+  for (let i = 0; i < capture.pixels.length; i++) restore.push(capture.pixels[i]);
+});}
 
 
 
@@ -157,17 +180,14 @@ function     updatehThreshold()     {hThreshold = hThresholdSlider.value();};
 function     updatesThreshold()     {sThreshold = sThresholdSlider.value();};
 function     updatevThreshold()     {vThreshold = vThresholdSlider.value();};
 
-
-
 function draw() {
 
   background(255);
 
+  noStroke();
+  fill('black');
 
   textSize(14);
-  noStroke();
-  fill('black')
-
 
   text( '  Y',  yThresholdSlider.x +  yThresholdSlider.width,  yThresholdSlider.y +  yThresholdSlider.height);
   text('  Cb', cbThresholdSlider.x + cbThresholdSlider.width, cbThresholdSlider.y + cbThresholdSlider.height);
@@ -176,318 +196,55 @@ function draw() {
   text( '  S',  sThresholdSlider.x +  sThresholdSlider.width,  sThresholdSlider.y +  sThresholdSlider.height);
   text( '  V',  vThresholdSlider.x +  vThresholdSlider.width,  vThresholdSlider.y +  vThresholdSlider.height);  
   
- 
-  video.loadPixels();  // Display webcam image
 
-  image(video, 10, 10, gridWidth, gridHeight);
+  video.loadPixels();
+  image(video, 10,  10, gridWidth, gridHeight);
 
-
-  restore = []
-
-  for (let i = 0; i < video.pixels.length; i++) {restore.push(video.pixels[i]);}
-
-
- /////////////////// START GRAYSCALE FILTER ////////////////////// 
-
-  for (let i = 0; i < video.pixels.length; i += 4) {
-
-    let brightness = ((video.pixels[i] + video.pixels[i + 1] + video.pixels[i + 2]) / 3) * 1.2;
-
-    brightness = constrain(brightness, 0, 255); 
-    
-    video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = brightness;
-
-  }
   
-    video.updatePixels();  
+  if (tookCapture == false) { 
 
-    image(video, 360, 10, gridWidth, gridHeight);
+    capture = video.get();
+    capture.loadPixels()
 
+    for (let i = 0; i < capture.pixels.length; i += 4) 
+      capture.pixels[i] = capture.pixels[i + 1] = capture.pixels[i + 2] = 0;
 
- /////////////////// END GRAYSCALE FILTER ////////////////////// 
-
-
-    restoreVideo()
-
-    video.updatePixels();
-
-
-/////////////////// START EMOTION EMOJI EXTENSION ///////////////
-
-    image(video, 710, 10, gridWidth, gridHeight);
-
-    drawExpressions(detections, 710, 20, 14)
-
-
-
-////////////////// END EMOTION EMOJI EXTENSION ///////////////////////
-
-
-  restoreVideo()
-
-
-//////////////////// START RED CHANNEL FILTER ///////////////////////////
-
-
-  for (let i = 0; i < video.pixels.length; i += 4) {video.pixels[i + 1] = video.pixels[i + 2] = 0;};
-
-
-  video.updatePixels();
-
-  image(video, 10, 220, gridWidth, gridHeight);
-
-
-////////// END RED CHANNEL FILTER //////////////////////
-
-
-restoreVideo()
-
-
-////////// START GREEN  CHANNEL FILTER //////////////////////
-
-
-for (let i = 0; i < video.pixels.length; i += 4) {video.pixels[i] = video.pixels[i + 2] = 0;}; 
-
-
-video.updatePixels();
-
-image(video, 360, 220, gridWidth, gridHeight);
-
-
-////////// END GREEN  CHANNEL FILTER //////////////////////
-
-
-restoreVideo()
-
-
-////////// START BLUE  CHANNEL FILTER //////////////////////
-
-
-for (let i = 0; i < video.pixels.length; i += 4) {video.pixels[i] = video.pixels[i + 1] = 0;};
-
-
-video.updatePixels();
-
-image(video, 710, 220, gridWidth, gridHeight);
-
-
-////////// END BLUE  CHANNEL FILTER //////////////////////
-
-
-restoreVideo()
-
-
-////////// START RED THRESHOLD FILTER //////////////////////
-
-for (let i = 0; i < video.pixels.length; i += 4) {
-        
-  if (video.pixels[i] >= redThreshold) 
-      
-       video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 255;
-  else video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 0;
-
-}
+    restore = [];
+    for (let i = 0; i < capture.pixels.length; i++) restore.push(capture.pixels[i]);
   
-  video.updatePixels();
-  
-  image(video, 10, 430, gridWidth, gridHeight);
+  } else restoreVideo();
 
+  capture.updatePixels()
+  image(capture, 10, 640, gridWidth, gridHeight);
 
-///////////////// END RED THRESHOLD FILTER /////////////////////
+  runFilter(360, 10, (i) => {grayscale20(i);});
 
+  runFilter(10, 220, (i) => {capture.pixels[i + 1] = capture.pixels[i + 2] = 0;});
+  runFilter(360,220, (i) => {capture.pixels[i]     = capture.pixels[i + 2] = 0;});
+  runFilter(710,220, (i) => {capture.pixels[i]     = capture.pixels[i + 1] = 0;});
 
-restoreVideo()
+  runFilter(10, 430, (i) => {rgbSegmentation(i, 0,   redThreshold);});
+  runFilter(360,430, (i) => {rgbSegmentation(i, 1, greenThreshold);});
+  runFilter(710,430, (i) => {rgbSegmentation(i, 2,  blueThreshold);});
 
+  runFilter(360,640, (i) => {ycbcr(i, false);});
+  runFilter(360,850, (i) => {ycbcr(i,  true);});
 
-////////////////// START GREEN THRESHOLD ///////////////////////
+  runFilter(710,640, (i) => {hsv(i, false);});
+  runFilter(710,850, (i) => {hsv(i,  true);});
 
 
-for (let i = 0; i < video.pixels.length; i += 4) {
-        
-  if  (video.pixels[i + 1] >= greenThreshold) 
-      
-       video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 255;
-  else video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 0;
+  runFaceFilter();
 
-}
-
-
-video.updatePixels();
-
-image(video, 360, 430, gridWidth, gridHeight);
-
-
-////////////////// END GREEN THRESHOLD ///////////////////////
-
-
-restoreVideo()
-
-
-////////////////// START BLUE FILTER /////////////////////////////
-
-
-for (let i = 0; i < video.pixels.length; i += 4) {
-        
-  if  (video.pixels[i + 2] >= blueThreshold) 
-      
-       video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 255;
-  else video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 0;
-
-}
-
-
-video.updatePixels();
-
-image(video, 710, 430, gridWidth, gridHeight);
-
-
-///////////////////// END BLUE FILTER //////////////////////////////////
-
-
-restoreVideo()
-
-
-video.updatePixels();
-
-
-image(video, 10, 640, gridWidth, gridHeight);
-
-
-/////////////////// SLIDER YCBCR //////////////////////
-
-
-for (let i = 0; i < video.pixels.length; i += 4) {ycbcr(i, false)};
-
-
-video.updatePixels();
-
-
-image(video, 360, 640, gridWidth, gridHeight);
-
-
-
-//////////////// END NO SLIDER YCBCR//////////////////
-
-
-restoreVideo()
-
-
-video.updatePixels();
-
-
-//////////////////// START SLIDER YCBCR /////////////////////
-
-
-for (let i = 0; i < video.pixels.length; i += 4) {ycbcr(i, true)}
-
-
-video.updatePixels();
-
-
-image(video, 360, 850, gridWidth, gridHeight);
-
-
-
-///////////////////////// END SLIDER YCBCR /////////////////////////////
-
-
-
-restoreVideo()
-
-
-video.updatePixels();
-
-
-
-//////////////////////////  HSV  FILTER NO SLIDER  ///////////////////////////////
-
-
-
-for (let i = 0; i <video.pixels.length; i += 4) {hsv(i, false);};
-     
-
- video.updatePixels();
-
-
- image(video, 710, 640, gridWidth, gridHeight);
-
-
- /////////////////////// HSV NO SLIDER END /////////////////////////////
-
-
- restoreVideo()
-
-
- video.updatePixels();
-
-
-//////////////////////////  HSV  FILTER  ///////////////////////////////
-
-
-for (let i = 0; i <video.pixels.length; i += 4) {hsv(i, true);};
-
-
-video.updatePixels();
-
-
-image(video, 710, 850, gridWidth, gridHeight);
-
-
-//////////////////// END HSV FILTER SLIDER ////////////////////////////////
-
-
-
-restoreVideo()
-
-video.updatePixels();
-
-
-
-/////////////////////// START FACE FILTERS //////////////////////////////////
-
-
-if (detections.length > 0) {
-
-      points = detections[0].landmarks.positions; // !!! MUST MAKE GLOBAL, LET ENCAPSULATES WITHIN THE 
-      bounds = detections[0].detection._box;
-
-      minX = bounds._x - 5;
-      maxX = bounds._x + bounds._width  + 5;
-
-      minY = bounds._y - 5;
-      maxY = bounds._y + bounds._height + 5;
-
-      if (faceFilter.value() ==                       0) faceBox();
-
-      if (faceFilter.value() ==       "Grayscaled_Face") boundsHelper((x,y) => {grayscale(x,y);});
-
-      if (faceFilter.value() == "Colour_Converted_Face") boundsHelper((x,y) => {      cmy(x,y);});
-            
-      if (faceFilter.value() ==          "Blurred_Face") boundsHelper((x,y) => {  blurred(x,y);});
-          
-      if (faceFilter.value() ==        "Pixelated_Face") pixelate();
-           
-  };
-
-  video.updatePixels();
-
-  if (faceFilter.value() != 0 && faceFilter.value() != "Pixelated_Face") 
-  
-      image(video, 10, 850, gridWidth, gridHeight);
- 
-}
-
-/////////////////////// END FACE FILTERS //////////////////////////////////
-
-
-
+  drawExpressions(detections, 710, 20, 14);
+};
 
 
 
 //////////////////////// HELPER FUNCTIONS ///////////////////////////////
 
 
-restoreVideo = () => {for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};};
+restoreVideo = () => {for (let i = 0; i < restore.length; i++) {capture.pixels[i] = restore[i];};};
 
 
 
@@ -500,8 +257,68 @@ boundsHelper = (callback) => {
 
 
 
+
+runFilter = (x,y, callback) => {
+  
+  for (let i = 0; i < capture.pixels.length; i += 4) callback(i);
+    
+  capture.updatePixels();  
+  
+  image(capture, x, y, gridWidth, gridHeight);
+  
+  restoreVideo()
+}
+      
+
+  
+
 //////////////////////// DRAW EXPRESSIONS ///////////////////////////////
 
+
+rgbSegmentation = (i, colour, threshold) => 
+{
+  if  (capture.pixels[i + colour] >= threshold)   
+       capture.pixels[i]  = capture.pixels[i + 1] = capture.pixels[i + 2] = 255;
+  else capture.pixels[i]  = capture.pixels[i + 1] = capture.pixels[i + 2] = 0;
+}
+
+
+
+runFaceFilter = () => {
+  
+  
+  if (detections.length > 0) {
+
+        video.updatePixels();
+
+        points = detections[0].landmarks.positions; // !!! MUST MAKE GLOBAL, LET ENCAPSULATES WITHIN THE 
+        bounds = detections[0].detection._box;
+
+        minX = bounds._x - 5;
+        maxX = bounds._x + bounds._width  + 5;
+
+        minY = bounds._y - 5;
+        maxY = bounds._y + bounds._height + 5;
+
+        if (faceFilter.value() ==                       0) faceBox();
+
+        if (faceFilter.value() ==       "Grayscaled_Face") boundsHelper((x,y) => {grayscale(x,y);});
+
+        if (faceFilter.value() == "Colour_Converted_Face") boundsHelper((x,y) => {cmy(x,y);      });
+              
+        if (faceFilter.value() ==          "Blurred_Face") boundsHelper((x,y) => {blurred(x,y);  });
+            
+        if (faceFilter.value() ==        "Pixelated_Face") pixelate();
+            
+    } else image(video, 10, 850, gridWidth, gridHeight);
+
+    video.updatePixels();
+
+    if (faceFilter.value() != 0 && faceFilter.value() != "Pixelated_Face") 
+    
+        image(video, 10, 850, gridWidth, gridHeight);
+  
+  }
 
 
 
@@ -526,11 +343,18 @@ function faceBox(x,y) {
 }
 
 
+function grayscale20(i) {
+
+  let brightness = ((capture.pixels[i] + capture.pixels[i + 1] + capture.pixels[i + 2]) / 3) * 1.2;
+
+  brightness = constrain(brightness, 0, 255); 
+  
+  capture.pixels[i] = capture.pixels[i + 1] = capture.pixels[i + 2] = brightness;
+
+}
 
 
 function grayscale(x,y) {
-
-  console.log(x,"  ",y)
 
   let i = ((y*gridWidth+x)*4)
 
@@ -555,9 +379,9 @@ function grayscale(x,y) {
 
 function ycbcr(i, hasThreshold){
 
-  let Y  =          0.299 * video.pixels[i] + 0.587    * video.pixels[i+1] + 0.114    * video.pixels[i+2];
-  let Cb = 128 - 0.168736 * video.pixels[i] - 0.331264 * video.pixels[i+1] + 0.5      * video.pixels[i+2];
-  let Cr =      128 + 0.5 * video.pixels[i] - 0.418688 * video.pixels[i+1] - 0.081312 * video.pixels[i+2];
+  let Y  =          0.299 * capture.pixels[i] + 0.587    * capture.pixels[i+1] + 0.114    * capture.pixels[i+2];
+  let Cb = 128 - 0.168736 * capture.pixels[i] - 0.331264 * capture.pixels[i+1] + 0.5      * capture.pixels[i+2];
+  let Cr =      128 + 0.5 * capture.pixels[i] - 0.418688 * capture.pixels[i+1] - 0.081312 * capture.pixels[i+2];
 
   let tY = hasThreshold ? 150 * ( yThreshold/128) : 150;
   let tB = hasThreshold ? 100 * (cbThreshold/128) : 100;
@@ -565,23 +389,25 @@ function ycbcr(i, hasThreshold){
 
   if (Y > tY && Cb > tB && Cr > tR) {
 
-    video.pixels[i]     = 255; // Set red channel to maximum for segmentation
-    video.pixels[i + 1] = 0;
-    video.pixels[i + 2] = 0;
+    capture.pixels[i]     = 255; // Set red channel to maximum for segmentation
+    capture.pixels[i + 1] = 0;
+    capture.pixels[i + 2] = 0;
 
   } else {
 
-    video.pixels[i]     =  Y; // Set back to original RGB values for non-segmented pixels
-    video.pixels[i + 1] = Cb;
-    video.pixels[i + 2] = Cr;
+    capture.pixels[i]     =  Y; // Set back to original RGB values for non-segmented pixels
+    capture.pixels[i + 1] = Cb;
+    capture.pixels[i + 2] = Cr;
   }
 }
 
+
+
 function hsv(i, hasThreshold) {
 
-  let r = video.pixels[i];
-  let g = video.pixels[i + 1];
-  let b = video.pixels[i + 2];
+  let r = capture.pixels[i];
+  let g = capture.pixels[i + 1];
+  let b = capture.pixels[i + 2];
 
   //////////////////////////////////////////////////////
 
@@ -619,9 +445,9 @@ function hsv(i, hasThreshold) {
   else                           H = 5 - R;
 
   ///////////////////////////////////////////////////////
-  video.pixels[i]     = hasThreshold ? H *  60 * (hThreshold / 128) : H *  60
-  video.pixels[i + 1] = hasThreshold ? S * 360 * (sThreshold / 128) : S * 360 
-  video.pixels[i + 2] = hasThreshold ?       V * (vThreshold / 128) : V
+  capture.pixels[i]     = hasThreshold ? H *  60 * (hThreshold / 128) : H *  60
+  capture.pixels[i + 1] = hasThreshold ? S * 360 * (sThreshold / 128) : S * 360 
+  capture.pixels[i + 2] = hasThreshold ?       V * (vThreshold / 128) : V
 }
 
 
@@ -718,6 +544,8 @@ function pixelate() {
 
 
 function drawExpressions(detections, x, y, ySpace){
+
+  image(video, 710, 10, gridWidth, gridHeight);
 
   fill('yellow');
   stroke("red");
