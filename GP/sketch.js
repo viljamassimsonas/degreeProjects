@@ -446,181 +446,38 @@ video.updatePixels();
 /////////////////////// START FACE FILTERS //////////////////////////////////
 
 
-if(detections.length > 0) {
+if (detections.length > 0) {
 
-      points = detections[0].landmarks.positions; // <------------------ !!! MUST MAKE GLOBAL, LET ENCAPSULATES WITHIN THE 
+      points = detections[0].landmarks.positions; // !!! MUST MAKE GLOBAL, LET ENCAPSULATES WITHIN THE 
+      bounds = detections[0].detection._box;
 
-      boxP = detections[0].detection._box
+      minX = bounds._x - 5;
+      maxX = bounds._x + bounds._width  + 5;
 
-      minX = boxP._x - 5
-      maxX = boxP._x + boxP._width  + 5
+      minY = bounds._y - 5;
+      maxY = bounds._y + bounds._height + 5;
 
-      minY = boxP._y - 5
-      maxY = boxP._y + boxP._height + 5
+      if (faceFilter.value() ==                       0) faceBox();
 
-      if(faceFilter.value() == 0) {
+      if (faceFilter.value() ==       "Grayscaled_Face") boundsHelper((x,y) => {grayscale(x,y);});
 
-          image(video, 10, 850, gridWidth, gridHeight);
-
-          for (let i = 0; i < points.length; i++) {   // BLYATLOAD OF POINTS 
+      if (faceFilter.value() == "Colour_Converted_Face") boundsHelper((x,y) => {      cmy(x,y);});
+            
+      if (faceFilter.value() ==          "Blurred_Face") boundsHelper((x,y) => {  blurred(x,y);});
           
-              stroke(161, 95, 251);                     // MAKE FACE SHAPE
-              strokeWeight(4);
-              point(points[i]._x + 10, points[i]._y + 850);
-
-              if (detections.length > 0) {
-
-                noFill();
-                strokeWeight(1);
-                stroke("red");
-                rect(minX+10, minY+850, maxX-minX, maxY-minY);
-             }
-          }
-      }
-
-      if(faceFilter.value() == "Grayscaled_Face") {
-
-        for     (let x = 0; x < gridWidth;  x++) {
-            for (let y = 0; y < gridHeight; y++) {
-
-              if ((x >= minX & x <=maxX) && (y >= minY & y <=maxY)) {
-
-                let i = ((y*gridWidth+x)*4)
-
-                let r = video.pixels[i];
-                let g = video.pixels[i + 1];
-                let b = video.pixels[i + 2];
-
-                let brightness = (r + g + b) / 3;
-                brightness += 51;                           // Increase brightness by 20%
-                brightness = constrain(brightness, 0, 255); // Ensure brightness stays within 0-255 range
-                
-                if      (brightness > 150) video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 255;
-
-                else if (brightness < 125) video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 0
-
-                else                       video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = brightness;
-
-              }
-            }
-          }  
-        } 
-
-        if(faceFilter.value() == "Colour_Converted_Face") {
-
-          for (let x = 0; x < gridWidth; x++) {
-      
-            for (let y = 0; y < gridHeight; y++) {
-        
-              if ((x >= minX & x <=maxX) && (y >= minY & y <=maxY)) {
-
-                  let i = (y*gridWidth+x)*4
-
-                  let r = video.pixels[i] / 255;
-                  let g = video.pixels[i + 1] / 255;
-                  let b = video.pixels[i + 2] / 255;
-                    
-                  // Convert RGB to CMY
-                  let c  = 1 - r;
-                  let m  = 1 - g;
-                  let y_ = 1 - b;
-                    
-                  // Scale values back to 0-255 range
-                  c  *= 255;
-                  m  *= 255;
-                  y_ *= 255;
-                    
-                  // Update pixel values with CMY
-                  video.pixels[i]     = c;
-                  video.pixels[i + 1] = m;
-                  video.pixels[i + 2] = y_;
-              }
-            }
-          }  
-        } 
-
-
-        if(faceFilter.value() == "Blurred_Face") {
-
-          for   (let x = 0; x < gridWidth;  x++) {
-            for (let y = 0; y < gridHeight; y++) {
-        
-              if ((x >= minX & x <=maxX) && (y >= minY & y <=maxY)) {
-      
-                let sum = [0, 0, 0];
-                for (let dx = -4; dx <= 4; dx++) {    // <----- KERNEL CHANGE 3x3 = -1 & -1
-                  for (let dy = -4; dy <= 4; dy++) {  // <----- KERNEL CHANGE 5x5 = -2 & -2
-                    
-                    let index = 4 * ((y + dy) * gridWidth + (x + dx));
-          
-                    for (let i = 0; i < 3; i++) {
-                      sum[i] += video.pixels[index + i];
-                    }
-                  }
-                }
-                let pixelIndex = 4 * (y * video.width + x);
-                for (let i = 0; i < 3; i++) {
-                  video.pixels[pixelIndex + i] = sum[i] / (3*3*3*3); // <--- CORRECT THE FORMULA
-                }
-              }
-            }
-          }
-        } 
-
-        if(faceFilter.value() == "Pixelated_Face") {
-          
-          image(video, 10, 850, gridWidth, gridHeight);
-
-          blockSizeH = (maxY-minY)/5
-          blockSizeW = (maxX-minX)/5
-
-          daW = Math.floor(maxX-minX)
-          daH = Math.floor(maxY-minY) 
-          
-          bro = createImage(gridWidth,gridHeight);
-          bro.loadPixels();
-
-          for  (offsetY = 0; offsetY < 5; offsetY++){
-            for(offsetX = 0; offsetX < 5; offsetX++){
-                    // Paint each block with the average pixel intensity
-                    for   (let y = Math.floor(0 + blockSizeH * offsetY + minY); y < blockSizeH * (offsetY + 1) + minY; y++) {                            
-                      average = 0
-                      sum = 0
-                      count = 0           
-                      for (let x = Math.floor(0 + blockSizeW * offsetX + minX); x < blockSizeW * (offsetX + 1) + minX; x++) {                     
-                        pixelColor = get(x+10, y+850);
-                        r = red(pixelColor)
-                        g = blue(pixelColor)
-                        b = blue(pixelColor)
-                        sum += (r + g + b) / 3
-                        count++
-                      }}   
-                        average = sum / count;
-                                // Paint each block with the average pixel intensity
-                          for   (let y = Math.floor(0 + blockSizeH * offsetY + minY); y < (blockSizeH * (offsetY+1)) + minY; y++) {
-                            for (let x = Math.floor(0 + blockSizeW * offsetX + minX); x < (blockSizeW * (offsetX+1)) + minX; x++) {                    
-                              broIndex = ((y*gridWidth+x)*4)          
-                              bro.set(x,y,average)            
-                        }}  
-                      }                     
-                    }
-                  bro.updatePixels();
-                  image(bro, 10, 850, gridWidth, gridHeight);
-        }
-  }
-    
-
+      if (faceFilter.value() ==        "Pixelated_Face") pixelate();
+           
+  };
 
   video.updatePixels();
-  
 
-  if (faceFilter.value() != 0 && faceFilter.value() != "Pixelated_Face") image(video, 10, 850, gridWidth, gridHeight);
+  if (faceFilter.value() != 0 && faceFilter.value() != "Pixelated_Face") 
+  
+      image(video, 10, 850, gridWidth, gridHeight);
  
+}
 
 /////////////////////// END FACE FILTERS //////////////////////////////////
-
-
-}
 
 
 
@@ -633,90 +490,66 @@ if(detections.length > 0) {
 restoreVideo = () => {for (let i = 0; i < restore.length; i++) {video.pixels[i] = restore[i];};};
 
 
+
+// runs functions within the bounds provided
+boundsHelper = (callback) => {
+
+  for (let x = 0; x < gridWidth; x++) {for (let y = 0; y < gridHeight; y++) {
+
+      if ((x >= minX & x <= maxX) && (y >= minY & y <= maxY)) {callback(x,y)};};};};  
+
+
+
 //////////////////////// DRAW EXPRESSIONS ///////////////////////////////
 
-function drawExpressions(detections, x, y, ySpace){
 
-  fill('yellow');
-  stroke("red");
-  strokeWeight(1.75);
-  text('EXTENSION', 965, 205);
 
-//If at least 1 face is detected
-  if(detections.length > 0){ 
-          
-   // assigns each var the value of each key in the dict
-   expressions = expressions
-   
-   let {angry, disgusted, fearful, happy, neutral, sad, surprised} = expressions; 
 
-      maxExpression = Object.keys(expressions).reduce((a,b)=>expressions[a]>expressions[b]?a:b);
+function faceBox(x,y) {
 
-   // maxExpression = Object.keys(expressions)[Math.floor(Math.random() * 7)]
+  image(video, 10, 850, gridWidth, gridHeight);
 
-      fX = x + minX - 0.5*(maxX-minX); 
-      fY = y + minY - 0.5*(maxY-minY);
-      wX = 2   *(maxX-minX);
-      wY = 1.75*(maxY-minY);
+  for (let i = 0; i < points.length; i++) {   // BLYATLOAD OF POINTS 
+  
+      stroke(161, 95, 251);                     // MAKE FACE SHAPE
+      strokeWeight(4);
+      point(points[i]._x + 10, points[i]._y + 850);
 
-      if      (maxExpression == "angry")     image(angrySVG,     fX, fY, wX, wY);
-      else if (maxExpression == "disgusted") image(disgustedSVG, fX, fY, wX, wY);
-      else if (maxExpression == "fearful")   image(fearfulSVG,   fX, fY, wX, wY);
-      else if (maxExpression == "happy")     image(happySVG,     fX, fY, wX, wY);
-      else if (maxExpression == "neutral")   image(neutralSVG,   fX, fY, wX, wY);
-      else if (maxExpression == "sad")       image(sadSVG,       fX, fY, wX, wY);
-      else if (maxExpression == "surprised") image(surprisedSVG, fX, fY, wX, wY);
+      if (detections.length > 0) {
 
-      x = x + 2
-      y = y + 2
-
-      function ifMaxExpression(expression) {maxExpression == expression ? fill("red") : fill("yellow")};
-
-      ifMaxExpression("angry");
-      text("angry:       "   + nf(angry     * 100, 2, 2) + "%", x, y);
-
-      ifMaxExpression("disgusted");
-      text("disgust:     "   + nf(disgusted * 100, 2, 2) + "%", x, y + ySpace);
-
-      ifMaxExpression("fearful");
-      text("fear:          " + nf(fearful   * 100, 2, 2) + "%", x, y + ySpace * 2);
-
-      ifMaxExpression("happy");
-      text("happy:      "    + nf(happy     * 100, 2, 2) + "%", x, y + ySpace * 3);
-
-      ifMaxExpression("neutral");
-      text("neutral:     "   + nf(neutral   * 100, 2, 2) + "%", x, y + ySpace * 4);
-
-      ifMaxExpression("sad");
-      text("sad:          "  + nf(sad       * 100, 2, 2) + "%", x, y + ySpace * 5);
-
-      ifMaxExpression("surprised");
-      text("surprised: "     + nf(surprised * 100, 2, 2) + "%", x, y + ySpace * 6);
+        noFill();
+        strokeWeight(1);
+        stroke("red");
+        rect(minX+10, minY+850, maxX-minX, maxY-minY);
+     }
   }
 }
 
 
-/////// ML5 FACE API //////////////
 
-function gotFaces(error, result) {
-  if (error) {
-    console.log(error);
-    return;
-  }
 
-  detections = result;
+function grayscale(x,y) {
 
-  faceapi.detect(gotFaces);
+  console.log(x,"  ",y)
+
+  let i = ((y*gridWidth+x)*4)
+
+  let r = video.pixels[i];
+  let g = video.pixels[i + 1];
+  let b = video.pixels[i + 2];
+
+  let brightness = (r + g + b) / 3;
+  brightness += 51;                           // Increase brightness by 20%
+  brightness = constrain(brightness, 0, 255); // Ensure brightness stays within 0-255 range
+  
+  if      (brightness > 150) video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 255;
+
+  else if (brightness < 125) video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = 0
+
+  else                       video.pixels[i] = video.pixels[i + 1] = video.pixels[i + 2] = brightness;
+
 }
 
-
-
-function faceReady() {
-
-  console.log("MODEL LOADED")
-
-  faceapi.detect(gotFaces);
-}
 
 
 
@@ -792,16 +625,178 @@ function hsv(i, hasThreshold) {
 }
 
 
+function cmy(x,y) {
+
+  let i = (y*gridWidth+x)*4
+
+  let r = video.pixels[i] / 255;
+  let g = video.pixels[i + 1] / 255;
+  let b = video.pixels[i + 2] / 255;
+    
+  // Convert RGB to CMY
+  let c  = 1 - r;
+  let m  = 1 - g;
+  let y_ = 1 - b;
+    
+  // Scale values back to 0-255 range
+  c  *= 255;
+  m  *= 255;
+  y_ *= 255;
+    
+  // Update pixel values with CMY
+  video.pixels[i]     = c;
+  video.pixels[i + 1] = m;
+  video.pixels[i + 2] = y_;
+}
+
+
+ function blurred(x,y) {
+
+    let sum = [0, 0, 0];
+      for (let dx = -4; dx <= 4; dx++) {    // <----- KERNEL CHANGE 3x3 = -1 & -1
+        for (let dy = -4; dy <= 4; dy++) {  // <----- KERNEL CHANGE 5x5 = -2 & -2
+                    
+          let index = 4 * ((y + dy) * gridWidth + (x + dx));
+          
+          for (let i = 0; i < 3; i++) {
+            sum[i] += video.pixels[index + i];
+          }
+        }
+      }
+    let pixelIndex = 4 * (y * video.width + x);
+    for (let i = 0; i < 3; i++) {
+            video.pixels[pixelIndex + i] = sum[i] / (3*3*3*3); // <--- CORRECT THE FORMULA
+    }
+}
+
+
+
+function pixelate() {
+
+  image(video, 10, 850, gridWidth, gridHeight);
+
+          blockSizeH = (maxY-minY)/5
+          blockSizeW = (maxX-minX)/5
+
+          daW = Math.floor(maxX-minX)
+          daH = Math.floor(maxY-minY) 
+          
+          bro = createImage(gridWidth,gridHeight);
+          bro.loadPixels();
+
+          for  (offsetY = 0; offsetY < 5; offsetY++){
+            for(offsetX = 0; offsetX < 5; offsetX++){
+                    // Paint each block with the average pixel intensity
+                    for   (let y = Math.floor(0 + blockSizeH * offsetY + minY); y < blockSizeH * (offsetY + 1) + minY; y++) {                            
+                      average = 0
+                      sum = 0
+                      count = 0           
+                      for (let x = Math.floor(0 + blockSizeW * offsetX + minX); x < blockSizeW * (offsetX + 1) + minX; x++) {                     
+                        pixelColor = get(x+10, y+850);
+                        r = red(pixelColor)
+                        g = blue(pixelColor)
+                        b = blue(pixelColor)
+                        sum += (r + g + b) / 3
+                        count++
+                      }}   
+                        average = sum / count;
+                                // Paint each block with the average pixel intensity
+                          for   (let y = Math.floor(0 + blockSizeH * offsetY + minY); y < (blockSizeH * (offsetY+1)) + minY; y++) {
+                            for (let x = Math.floor(0 + blockSizeW * offsetX + minX); x < (blockSizeW * (offsetX+1)) + minX; x++) {                    
+                              broIndex = ((y*gridWidth+x)*4)          
+                              bro.set(x,y,average)            
+                        }}  
+                      }                     
+                    }
+                  bro.updatePixels();
+                  image(bro, 10, 850, gridWidth, gridHeight);
+
+
+}
 
 
 
 
+function drawExpressions(detections, x, y, ySpace){
+
+  fill('yellow');
+  stroke("red");
+  strokeWeight(1.75);
+  text('EXTENSION', 965, 205);
+
+//If at least 1 face is detected
+  if(detections.length > 0){ 
+          
+   // assigns each var the value of each key in the dict
+    expressions = detections[0].expressions; 
+
+
+   let {angry, disgusted, fearful, happy, neutral, sad, surprised} = detections[0].expressions; 
+
+      maxExpression = Object.keys(expressions).reduce((a,b)=>expressions[a]>expressions[b]?a:b);
+
+   // maxExpression = Object.keys(expressions)[Math.floor(Math.random() * 7)]
+
+      fX = x + minX - 0.5*(maxX-minX); 
+      fY = y + minY - 0.5*(maxY-minY);
+      wX = 2   *(maxX-minX);
+      wY = 1.75*(maxY-minY);
+
+      if      (maxExpression == "angry")     image(angrySVG,     fX, fY, wX, wY);
+      else if (maxExpression == "disgusted") image(disgustedSVG, fX, fY, wX, wY);
+      else if (maxExpression == "fearful")   image(fearfulSVG,   fX, fY, wX, wY);
+      else if (maxExpression == "happy")     image(happySVG,     fX, fY, wX, wY);
+      else if (maxExpression == "neutral")   image(neutralSVG,   fX, fY, wX, wY);
+      else if (maxExpression == "sad")       image(sadSVG,       fX, fY, wX, wY);
+      else if (maxExpression == "surprised") image(surprisedSVG, fX, fY, wX, wY);
+
+      x = x + 2
+      y = y + 2
+
+      function ifMaxExpression(expression) {maxExpression == expression ? fill("red") : fill("yellow")};
+
+      ifMaxExpression("angry");
+      text("angry:       "   + nf(angry     * 100, 2, 2) + "%", x, y);
+
+      ifMaxExpression("disgusted");
+      text("disgust:     "   + nf(disgusted * 100, 2, 2) + "%", x, y + ySpace);
+
+      ifMaxExpression("fearful");
+      text("fear:          " + nf(fearful   * 100, 2, 2) + "%", x, y + ySpace * 2);
+
+      ifMaxExpression("happy");
+      text("happy:      "    + nf(happy     * 100, 2, 2) + "%", x, y + ySpace * 3);
+
+      ifMaxExpression("neutral");
+      text("neutral:     "   + nf(neutral   * 100, 2, 2) + "%", x, y + ySpace * 4);
+
+      ifMaxExpression("sad");
+      text("sad:          "  + nf(sad       * 100, 2, 2) + "%", x, y + ySpace * 5);
+
+      ifMaxExpression("surprised");
+      text("surprised: "     + nf(surprised * 100, 2, 2) + "%", x, y + ySpace * 6);
+  }
+}
+
+
+/////// ML5 FACE API //////////////
+
+function gotFaces(error, result) {
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  detections = result;
+
+  faceapi.detect(gotFaces);
+}
 
 
 
+function faceReady() {
 
+  console.log("MODEL LOADED")
 
-
-
-
-
+  faceapi.detect(gotFaces);
+}
