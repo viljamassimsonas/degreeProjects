@@ -550,9 +550,6 @@ extension = (detections, x, y, ySpace) =>
       // Determine the most prominent facial expression
       let  maxExpression = Object.keys(expressions).reduce((a,b) => expressions[a] > expressions[b] ? a:b);
 
-      // Adjust the position for displaying expression statistics and emojis
-      x  = x + 2;
-      y  = y + 2;
       
       // Calculate positions and sizes for displaying the emoji
       let fX = -0.5  * (maxX-minX) + x + minX; 
@@ -569,6 +566,10 @@ extension = (detections, x, y, ySpace) =>
       else if (maxExpression == "sad")       image(sadSVG,       fX, fY, wX, wY);
       else if (maxExpression == "surprised") image(surprisedSVG, fX, fY, wX, wY);
       
+      // Adjust the position for displaying expression statistics and emojis
+      x  = x + 2;
+      y  = y + 2;
+
       // Function to change text color based on the most prominent expression
       ifMaxExpression = (expression) => {maxExpression == expression ? fill("red") : fill("yellow")};
 
