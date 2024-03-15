@@ -232,7 +232,7 @@ draw = () =>
     } else restoreVideo();
 
     // Update pixels and display raw unedited capture image
-    capture.updatePixels()
+    capture.updatePixels();
     image(capture, 10, 640, gridWidth, gridHeight);
     
     // Run extension filter and face filters
