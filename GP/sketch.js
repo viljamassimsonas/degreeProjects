@@ -147,11 +147,11 @@ setup = () =>
   redThresholdSlider = createSlider(0, 255, 128);
 greenThresholdSlider = createSlider(0, 255, 128);
  blueThresholdSlider = createSlider(0, 255, 128);
-    yThresholdSlider = createSlider(0, 255, 128);
-   cbThresholdSlider = createSlider(0, 255, 128);
-   crThresholdSlider = createSlider(0, 255, 128);
-    hThresholdSlider = createSlider(0, 255, 128);
-    sThresholdSlider = createSlider(0, 255, 128);
+    yThresholdSlider = createSlider(0, 255, 51);
+   cbThresholdSlider = createSlider(0, 255, 0);
+   crThresholdSlider = createSlider(0, 255, 110);
+    hThresholdSlider = createSlider(0, 255, 255);
+    sThresholdSlider = createSlider(0, 255, 180);
     vThresholdSlider = createSlider(0, 255, 128);
 
     // Create input backcall
@@ -166,9 +166,9 @@ greenThresholdSlider.input(greenThresholdUpdate);
     vThresholdSlider.input(vThresholdUpdate); 
 
   // Color Threshold Position
-  redThresholdSlider.position(10, 610);
-greenThresholdSlider.position(360, 610);
- blueThresholdSlider.position(710, 610);
+  redThresholdSlider.position(10 , 415);
+greenThresholdSlider.position(360, 415);
+ blueThresholdSlider.position(710, 415);
     yThresholdSlider.position(450, 1055);
    cbThresholdSlider.position(450, 1077.5);
    crThresholdSlider.position(450, 1100);                                          
@@ -403,19 +403,19 @@ ycbcr = (i, hasThreshold) =>
   let tB = hasThreshold ? 100 * (cbThreshold/128) : 100;
   let tR = hasThreshold ? 150 * (crThreshold/128) : 150;
 
-  // Set to red if within threshold 
+  // Set to red if within HSV threshold and also implements adjustable threshold B/W filter
   if (Y > tY && Cb > tB && Cr > tR) 
   {
-    capture.pixels[i]     = 255; 
-    capture.pixels[i + 1] = 0;
-    capture.pixels[i + 2] = 0;
+    capture.pixels[i]     = hasThreshold ? 255 : 0; 
+    capture.pixels[i + 1] = hasThreshold ? 255 : 0;
+    capture.pixels[i + 2] = hasThreshold ? 255 : 0;
   } 
   else 
   // Follow raw YCbCr values
   {
-    capture.pixels[i]     =  Y; 
-    capture.pixels[i + 1] = Cb;
-    capture.pixels[i + 2] = Cr;
+    capture.pixels[i]     = hasThreshold ? 0 :  Y; 
+    capture.pixels[i + 1] = hasThreshold ? 0 : Cb;
+    capture.pixels[i + 2] = hasThreshold ? 0 : Cr;
 };};
 
 // Run HSV filter
@@ -461,7 +461,16 @@ hsv = (i, hasThreshold, source) =>
   source.pixels[i]     = hasThreshold ? H *  60 * (hThreshold / 128) : H *  60;
   source.pixels[i + 1] = hasThreshold ? S * 360 * (sThreshold / 128) : S * 360;
   source.pixels[i + 2] = hasThreshold ?       V * (vThreshold / 128) : V;
-};
+
+  // Threshold B/W filter
+  if (hasThreshold) 
+  {
+    if ((source.pixels[i] + source.pixels[i + 1] + source.pixels[i + 2]) / 3 > 128) 
+    {  
+         source.pixels[i] = source.pixels[i + 1] = source.pixels[i + 2] = 0
+
+  } else source.pixels[i] = source.pixels[i + 1] = source.pixels[i + 2] = 255
+};};
 
 // Convert pixels into blurred ones, used as Face Filter
 blurred = (x,y) => 
