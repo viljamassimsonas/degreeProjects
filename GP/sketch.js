@@ -85,13 +85,13 @@ let     vThreshold = 0;
 // Load emoji SVGs
 preload = () =>
 {
-  angrySVG     = loadImage(    "angry.svg");
-  disgustedSVG = loadImage("disgusted.svg");
-  fearfulSVG   = loadImage(  "fearful.svg");
-  happySVG     = loadImage(    "happy.svg");
-  neutralSVG   = loadImage(  "neutral.svg");
-  sadSVG       = loadImage(      "sad.svg");
-  surprisedSVG = loadImage("surprised.svg");
+  angrySVG     = loadImage("emojis/angry.svg");
+  disgustedSVG = loadImage("emojis/disgusted.svg");
+  fearfulSVG   = loadImage("emojis/fearful.svg");
+  happySVG     = loadImage("emojis/happy.svg");
+  neutralSVG   = loadImage("emojis/neutral.svg");
+  sadSVG       = loadImage("emojis/sad.svg");
+  surprisedSVG = loadImage("emojis/surprised.svg");
 };
 
 // Setup functions
